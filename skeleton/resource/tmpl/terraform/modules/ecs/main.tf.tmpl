@@ -1,0 +1,8 @@
+resource "aws_ecs_cluster" "{{ .Project }}_cluster" {
+  name = "{{ .Project }}"
+
+  tags = {
+    Name        = "{{ .Project }}"
+    Environment = terraform.workspace
+  }
+}

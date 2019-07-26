@@ -1,0 +1,6 @@
+variable "availability_zone" {
+  default = {
+    "production.a" = "{{ .Region }}a"
+    "production.c" = "{{ .Region }}c"
+  }
+}

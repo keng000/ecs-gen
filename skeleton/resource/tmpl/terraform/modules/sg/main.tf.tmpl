@@ -1,0 +1,143 @@
+resource "aws_security_group" "{{ .Project }}_public_subnet_all_tcp" {
+  vpc_id = var.vpc_vpc_{{ .Project }}_id
+  name   = "{{ .Project }}_public_subnet_all_tcp"
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+
+    cidr_blocks = [
+      var.vpc_subnet_{{ .Project }}_public_a_cidr_block,
+      var.vpc_subnet_{{ .Project }}_public_c_cidr_block,
+    ]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "{{ .Project }}publicsubnetalltcp"
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_security_group" "{{ .Project }}_private_subnet_all_tcp" {
+  vpc_id = var.vpc_vpc_{{ .Project }}_id
+  name   = "{{ .Project }}_private_subnet_all_tcp"
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+
+    cidr_blocks = [
+      var.vpc_subnet_{{ .Project }}_private_a_cidr_block,
+      var.vpc_subnet_{{ .Project }}_private_c_cidr_block,
+    ]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "{{ .Project }}privatesubnetalltcp"
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_security_group" "{{ .Project }}_alb" {
+  vpc_id = var.vpc_vpc_{{ .Project }}_id
+  name   = "{{ .Project }}_alb"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "{{ .Project }}alb"
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_security_group" "{{ .Project }}_ecs" {
+  vpc_id = var.vpc_vpc_{{ .Project }}_id
+  name   = "{{ .Project }}_ecs"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    security_groups = [
+      aws_security_group.{{ .Project }}_alb.id,
+    ]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    security_groups = [
+      aws_security_group.{{ .Project }}_alb.id,
+    ]
+  }
+
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+    security_groups = [
+      aws_security_group.{{ .Project }}_alb.id,
+    ]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "{{ .Project }}ecs"
+    Environment = terraform.workspace
+  }
+}

@@ -1,0 +1,15 @@
+output "{{.Project }}_private_subnet_all_tcp_id" {
+  value = aws_security_group.{{.Project }}_private_subnet_all_tcp.id
+}
+
+output "{{.Project }}_public_subnet_all_tcp_id" {
+  value = aws_security_group.{{.Project }}_public_subnet_all_tcp.id
+}
+
+output "{{.Project }}_alb_id" {
+  value = aws_security_group.{{.Project }}_alb.id
+}
+
+output "{{.Project }}_ecs_id" {
+  value = aws_security_group.{{.Project }}_ecs.id
+}

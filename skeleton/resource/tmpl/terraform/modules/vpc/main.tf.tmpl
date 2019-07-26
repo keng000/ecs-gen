@@ -1,0 +1,119 @@
+# VPC Settings
+resource "aws_vpc" "{{ .Project }}" {
+  cidr_block = "10.1.0.0/16"
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+  enable_classiclink   = false
+
+  instance_tenancy = "default"
+
+  tags = {
+    Name        = "{{ .Project }}"
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}
+
+# Public Subnets Settings
+resource "aws_subnet" "{{ .Project }}_public_a" {
+  vpc_id            = aws_vpc.{{ .Project }}.id
+  cidr_block        = "10.1.1.0/24"
+  availability_zone = lookup(var.availability_zone, "${terraform.workspace}.a")
+
+  tags = {
+    Name        = "{{ .Project }}_public_a"
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}
+
+resource "aws_subnet" "{{ .Project }}_public_c" {
+  vpc_id            = aws_vpc.{{ .Project }}.id
+  cidr_block        = "10.1.3.0/24"
+  availability_zone = lookup(var.availability_zone, "${terraform.workspace}.c")
+
+  tags = {
+    Name        = "{{ .Project }}_public_c"
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}
+
+# Private Subnets Settings
+resource "aws_subnet" "{{ .Project }}_private_a" {
+  vpc_id            = aws_vpc.{{ .Project }}.id
+  cidr_block        = "10.1.100.0/24"
+  availability_zone = lookup(var.availability_zone, "${terraform.workspace}.a")
+
+  tags = {
+    Name        = "{{ .Project }}_private_a"
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}
+
+resource "aws_subnet" "{{ .Project }}_private_c" {
+  vpc_id            = aws_vpc.{{ .Project }}.id
+  cidr_block        = "10.1.101.0/24"
+  availability_zone = lookup(var.availability_zone, "${terraform.workspace}.c")
+
+  tags = {
+    Name        = "{{ .Project }}_private_c"
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}
+
+# Routes Table Settings
+resource "aws_route_table" "{{ .Project }}-public-rt" {
+  vpc_id = aws_vpc.{{ .Project }}.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.{{ .Project }}-igw.id
+  }
+
+  tags = {
+    Name        = "{{ .Project }}_public_rt"
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}
+
+resource "aws_route_table_association" "{{ .Project }}-rta1" {
+  subnet_id      = aws_subnet.{{ .Project }}_public_a.id
+  route_table_id = aws_route_table.{{ .Project }}-public-rt.id
+}
+
+resource "aws_route_table_association" "{{ .Project }}-rta2" {
+  subnet_id      = aws_subnet.{{ .Project }}_public_c.id
+  route_table_id = aws_route_table.{{ .Project }}-public-rt.id
+}
+
+# DHCP option sets
+resource "aws_vpc_dhcp_options" "{{ .Project }}-dhcp" {
+  domain_name_servers = ["AmazonProvidedDNS"]
+
+  tags = {
+    Name        = "{{ .Project }}_dhcp"
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}
+
+resource "aws_vpc_dhcp_options_association" "{{ .Project }}-dhcp-association" {
+  vpc_id          = aws_vpc.{{ .Project }}.id
+  dhcp_options_id = aws_vpc_dhcp_options.{{ .Project }}-dhcp.id
+}
+
+# Internet Gateway Settings
+resource "aws_internet_gateway" "{{ .Project }}-igw" {
+  vpc_id = aws_vpc.{{ .Project }}.id
+
+  tags = {
+    Name        = "{{ .Project }}_igw"
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}
