@@ -1,8 +1,6 @@
 package skeleton
 
-import (
-	"path/filepath"
-)
+import "path/filepath"
 
 // Init render the base tmpl file and generate required files.
 func (s *Skeleton) Init() error {

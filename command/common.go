@@ -9,7 +9,7 @@ import (
 
 const (
 	envFile   string = ".ecs-gen.json"
-	pjDirName string = "environment"
+	pjDirName string = "environments"
 )
 
 func searchEnv() (string, error) {
@@ -55,4 +55,13 @@ func exists(filename, dstPath string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if e == v {
+			return true
+		}
+	}
+	return false
 }

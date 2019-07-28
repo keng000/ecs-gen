@@ -1,38 +1,5 @@
 package skeleton
 
-// Skeleton stores meta data of skeleton
-type Skeleton struct {
-	// Path is where skeleton is generated.
-	Path string
-
-	Executable *Executable
-}
-
-// Executable store the executable meta information
-type Executable struct {
-	// Project is the name of the ecs project
-	Project string
-
-	// Region is the aws region where the project will deployed
-	Region string
-
-	// APIName is the name for auto scale generate
-	APIName string
-}
-
-// DumpExecutable is
-type DumpExecutable struct {
-	// Project is the name of the ecs project
-	Project string
-
-	// Region is the aws region where the project will deployed
-	Region string
-
-	// APIName is the name for auto scale generate
-	APIName []string
-}
-
-// baseTemplates is a list of template files when it will render in init
 var baseTemplates = []Template{
 	{"skeleton/resource/tmpl/terraform/modules/vpc/main.tf.tmpl", "modules/vpc/main.tf"},
 	{"skeleton/resource/tmpl/terraform/modules/vpc/outputs.tf.tmpl", "modules/vpc/outputs.tf"},

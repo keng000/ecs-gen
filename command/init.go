@@ -1,7 +1,6 @@
 package command
 
 import (
-	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
@@ -12,11 +11,6 @@ import (
 
 // CmdInit process the init command
 func CmdInit(c *cli.Context) error {
-	executable := &p_skeleton.Executable{
-		Project: c.String("project"),
-		Region:  c.String("region"),
-	}
-
 	curDir, err := os.Getwd()
 	if err != nil {
 		return err
@@ -26,6 +20,11 @@ func CmdInit(c *cli.Context) error {
 	if err == nil {
 		log.Panicf("cannot create directory. already exists: %s", path)
 		return err
+	}
+
+	executable := &p_skeleton.Executable{
+		Project: c.String("project"),
+		Region:  c.String("region"),
 	}
 
 	skeleton := p_skeleton.Skeleton{
@@ -44,20 +43,7 @@ func CmdInit(c *cli.Context) error {
 		Region:  executable.Region,
 	}
 
-	dumpData, err := json.MarshalIndent(dumpExecutable, "", "  ")
-	if err != nil {
-		log.Panic(err)
-		return err
-	}
-
-	fp, err := os.Create(envFilePath)
-	if err != nil {
-		log.Panic(err)
-		return err
-	}
-
-	_, err = fp.Write(dumpData)
-	if err != nil {
+	if err := writeExecutable(envFilePath, dumpExecutable); err != nil {
 		log.Panic(err)
 		return err
 	}

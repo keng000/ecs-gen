@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -33,7 +34,7 @@ func (t *Template) Exec(data interface{}) error {
 	outputDir := filepath.Dir(outputPath)
 	_, err = os.Stat(outputDir)
 	if err != nil {
-		println(outputDir)
+		log.Printf("dir created: %s", outputDir)
 		_ = os.MkdirAll(outputDir, 0755)
 	}
 
@@ -74,26 +75,5 @@ func render(tmpl string, fp io.Writer, data interface{}) error {
 		return err
 	}
 
-	return nil
-}
-
-func Path() error {
-	path, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	println(path)
-
-	err = filepath.Walk(filepath.Dir(filepath.Dir(path)), func(path string, info os.FileInfo, err error) error {
-		println(path)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-
-	if err != nil {
-		panic(err)
-	}
 	return nil
 }

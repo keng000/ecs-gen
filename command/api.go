@@ -2,6 +2,7 @@ package command
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -17,20 +18,19 @@ func CmdAPI(c *cli.Context) error {
 		log.Panic(err)
 		return err
 	}
-
-	content, err := ioutil.ReadFile(envFilePath)
+	dumpExecutable, err := loadExecutable(envFilePath)
 	if err != nil {
 		log.Panic(err)
 		return err
 	}
-
-	dumpExecutable := &skeleton.DumpExecutable{}
-	if err := json.Unmarshal(content, dumpExecutable); err != nil {
-		log.Panic(err)
-		return err
+	apiName := c.String("n")
+	if apiName == "" {
+		log.Panic("-name, -n should be passed to the args")
+		return fmt.Errorf("-name, -n should be passed to the args")
+	} else if contains(dumpExecutable.APIName, apiName) {
+		log.Panicf("already exists: %s", apiName)
+		return fmt.Errorf("already exists: %s", apiName)
 	}
-
-	apiName := c.String("a")
 	executable := &skeleton.Executable{
 		Project: dumpExecutable.Project,
 		Region:  dumpExecutable.Region,
@@ -49,7 +49,34 @@ func CmdAPI(c *cli.Context) error {
 	}
 
 	dumpExecutable.APIName = append(dumpExecutable.APIName, apiName)
-	dumpData, err := json.MarshalIndent(dumpExecutable, "", "  ")
+
+	if err := writeExecutable(envFilePath, dumpExecutable); err != nil {
+		log.Panic(err)
+		return err
+	}
+
+	log.Printf("API created: %s", apiName)
+
+	return nil
+}
+
+func loadExecutable(envFilePath string) (*skeleton.DumpExecutable, error) {
+	content, err := ioutil.ReadFile(envFilePath)
+	if err != nil {
+		log.Panic(err)
+		return nil, err
+	}
+
+	dumpExecutable := &skeleton.DumpExecutable{}
+	if err := json.Unmarshal(content, dumpExecutable); err != nil {
+		log.Panic(err)
+		return nil, err
+	}
+	return dumpExecutable, nil
+}
+
+func writeExecutable(envFilePath string, data *skeleton.DumpExecutable) error {
+	dumpData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		log.Panic(err)
 		return err
@@ -66,8 +93,6 @@ func CmdAPI(c *cli.Context) error {
 		log.Panic(err)
 		return err
 	}
-
-	log.Printf("API created: %s", apiName)
 
 	return nil
 }
