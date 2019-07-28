@@ -2,6 +2,8 @@ package skeleton
 
 import (
 	"encoding/json"
+	"errors"
+	"io/ioutil"
 	"path/filepath"
 
 	"github.com/keng000/ecs-gen/utils"
@@ -69,4 +71,48 @@ func writeEnvInfo(s *Skeleton) error {
 	}
 
 	return nil
+}
+
+func searchEnv() (string, error) {
+	curPath, err := filepath.Abs("./")
+	if err != nil {
+		return "", err
+	}
+
+	for {
+		exist, err := exists(envFile, curPath)
+		if err != nil {
+			return "", err
+		}
+		if exist {
+			// .ecs-gen.json file found
+			break
+		}
+		if curPath == "/" {
+			return "", errors.New(".ecs-gen.json not found. please run ecs-gen init before")
+		}
+
+		curPath = filepath.Dir(curPath)
+	}
+
+	envFilePath := filepath.Join(curPath, envFile)
+	if err != nil {
+		panic(err)
+	}
+	return envFilePath, nil
+}
+
+func exists(filename, dstPath string) (bool, error) {
+	files, err := ioutil.ReadDir(dstPath)
+	if err != nil {
+		return false, err
+	}
+
+	for _, file := range files {
+		if file.Name() == filename {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
