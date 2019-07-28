@@ -8,20 +8,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-var GlobalFlags = []cli.Flag{
-	cli.StringFlag{
-		EnvVar: "ENV_A",
-		Name:   "a",
-		Value:  "",
-		Usage:  "",
-	},
-	cli.StringFlag{
-		EnvVar: "ENV_B",
-		Name:   "b",
-		Value:  "",
-		Usage:  "",
-	},
-}
+var GlobalFlags = []cli.Flag{}
 
 var Commands = []cli.Command{
 	{
@@ -42,10 +29,15 @@ var Commands = []cli.Command{
 		},
 	},
 	{
-		Name:   "auto-scale",
-		Usage:  "",
-		Action: command.CmdAutoScale,
-		Flags:  []cli.Flag{},
+		Name:   "api",
+		Usage:  "Generate target groups and ecr repos with auto scale setting",
+		Action: command.CmdAPI,
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "name, n",
+				Usage: "",
+			},
+		},
 	},
 }
 

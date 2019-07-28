@@ -2,6 +2,6 @@ package command
 
 import "testing"
 
-func TestCmdAutoScale(t *testing.T) {
+func TestCmdAPI(t *testing.T) {
 	// Write your code here
 }
