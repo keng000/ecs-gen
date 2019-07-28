@@ -3,6 +3,7 @@ package skeleton
 import (
 	"bytes"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -20,7 +21,12 @@ type Template struct {
 
 // Exec is
 func (t *Template) Exec(data interface{}) error {
-	tmpl, err := Asset(t.Path)
+	tmplHTTPFile, err := Assets.Open(t.Path)
+	if err != nil {
+		return err
+	}
+
+	tmpl, err := ioutil.ReadAll(tmplHTTPFile)
 	if err != nil {
 		return err
 	}

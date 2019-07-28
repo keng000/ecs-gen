@@ -3,6 +3,7 @@ package command
 import (
 	"errors"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -17,7 +18,14 @@ func searchEnv() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	curPath = filepath.Join(curPath, pjDirName)
+
+	envDirExist, err := exists(pjDirName, curPath)
+	if err != nil {
+		return "", err
+	}
+	if envDirExist {
+		curPath = filepath.Join(curPath, pjDirName)
+	}
 
 	for {
 		exist, err := exists(envFile, curPath)
@@ -42,14 +50,15 @@ func searchEnv() (string, error) {
 	return envFilePath, nil
 }
 
-func exists(filename, dstPath string) (bool, error) {
+func exists(baseName, dstPath string) (bool, error) {
 	files, err := ioutil.ReadDir(dstPath)
 	if err != nil {
+		log.Panicf(err.Error())
 		return false, err
 	}
 
 	for _, file := range files {
-		if file.Name() == filename {
+		if file.Name() == baseName {
 			return true, nil
 		}
 	}
