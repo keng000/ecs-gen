@@ -1,6 +1,13 @@
 package skeleton
 
-import "path/filepath"
+import (
+	"encoding/json"
+	"path/filepath"
+
+	"github.com/keng000/ecs-gen/utils"
+)
+
+const envFile string = ".ecs-gen.json"
 
 // Skeleton stores meta data of skeleton
 type Skeleton struct {
@@ -19,7 +26,7 @@ type Executable struct {
 	Region string
 }
 
-// BaseTemplates is
+// BaseTemplates is a list of template files when it will render in init
 var BaseTemplates = []Template{
 	{"skeleton/resource/tmpl/terraform/modules/vpc/main.tf.tmpl", "modules/vpc/main.tf"},
 	{"skeleton/resource/tmpl/terraform/modules/vpc/outputs.tf.tmpl", "modules/vpc/outputs.tf"},
@@ -34,19 +41,32 @@ var BaseTemplates = []Template{
 // Base render the base tmpl file and generate required files.
 func (s *Skeleton) Base() error {
 	for _, tmpl := range BaseTemplates {
-		// println("----------------------")
-		// println(tmpl.Path)
-		// println(tmpl.OutputPathTmpl)
-		// fmt.Printf("%+v\n", s.Executable)
-		// println("----------------------")
 		tmpl.OutputPathTmpl = filepath.Join(s.Path, tmpl.OutputPathTmpl)
 		if err := tmpl.Exec(s.Executable); err != nil {
 			return err
 		}
 	}
+
+	if err := writeEnvInfo(s); err != nil {
+		return err
+	}
 	return nil
 }
 
-// func (s *Skeleton) generate(templates []Template, data interface{}) error {
+func writeEnvInfo(s *Skeleton) error {
+	environments := filepath.Join(s.Path, envFile)
+	bytesData, err := json.Marshal(&s.Executable)
+	if err != nil {
+		return err
+	}
 
-// }
+	var data map[string]string
+	if err := json.Unmarshal(bytesData, &data); err != nil {
+		return err
+	}
+	if err := utils.AppendWrite(environments, data); err != nil {
+		return err
+	}
+
+	return nil
+}
