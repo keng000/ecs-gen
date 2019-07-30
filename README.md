@@ -1,10 +1,14 @@
 # ecs-gen/
 
-
+This is a cli tool to generate AWS Fargate api infrastructure which are provisioned by terraform.
 
 ## Description
 
 ## Usage
+
+### ecs-gen init
+
+### ecs-gen api
 
 ## Install
 
@@ -12,11 +16,13 @@ To install, use `go get`:
 
 ```bash
 $ go get -d github.com/keng000/ecs-gen/
+$ cd $GOPATH/src/github.com/keng000/ecs-gen/
+$ go install
 ```
 
 ## Contribution
 
-1. Fork ([https://github.com/keng000/ecs-gen//fork](https://github.com/keng000/ecs-gen//fork))
+1. Fork ([https://github.com/keng000/ecs-gen//fork](https://github.com/keng000/ecs-gen/fork))
 1. Create a feature branch
 1. Commit your changes
 1. Rebase your local changes against the master branch
@@ -28,13 +34,6 @@ $ go get -d github.com/keng000/ecs-gen/
 
 [keng000](https://github.com/keng000)
 
-
-## Args
-
-### init
-
-- project name
-- region
 
 ### Deps
 
