@@ -1,4 +1,4 @@
-# ecs-gen/
+# ecs-gen
 
 This is a cli tool to generate AWS Fargate api infrastructure which are provisioned by terraform.
 
