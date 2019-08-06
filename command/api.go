@@ -33,7 +33,6 @@ func CmdAPI(c *cli.Context) error {
 	}
 	executable := &skeleton.Executable{
 		Project: dumpExecutable.Project,
-		Region:  dumpExecutable.Region,
 		APIName: apiName,
 	}
 

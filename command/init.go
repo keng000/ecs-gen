@@ -24,7 +24,6 @@ func CmdInit(c *cli.Context) error {
 
 	executable := &p_skeleton.Executable{
 		Project: c.String("project"),
-		Region:  c.String("region"),
 	}
 
 	skeleton := p_skeleton.Skeleton{
@@ -40,7 +39,6 @@ func CmdInit(c *cli.Context) error {
 	envFilePath := filepath.Join(path, envFile)
 	dumpExecutable := &p_skeleton.DumpExecutable{
 		Project: executable.Project,
-		Region:  executable.Region,
 	}
 
 	if err := writeExecutable(envFilePath, dumpExecutable); err != nil {
