@@ -21,23 +21,12 @@ var Commands = []cli.Command{
 				Value: "sample-pj",
 				Usage: "",
 			},
-			cli.StringFlag{
-				Name:  "region, r",
-				Value: "ap-northeast-1",
-				Usage: "",
-			},
 		},
 	},
 	{
 		Name:   "api",
 		Usage:  "Generate target groups and ecr repos with auto scale setting",
 		Action: command.CmdAPI,
-		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "name, n",
-				Usage: "",
-			},
-		},
 	},
 }
 
