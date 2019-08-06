@@ -11,6 +11,7 @@ resource "aws_alb_target_group" "{{ .APIName }}" {
     port                = 8000
     protocol            = "HTTP"
     timeout             = lookup(var.load_balancer_rule, "{{ .APIName }}.health_check_timeout")
+    healthy_threshold   = lookup(var.load_balancer_rule, "{{ .APIName }}.healthy_threshold")
     unhealthy_threshold = lookup(var.load_balancer_rule, "{{ .APIName }}.unhealthy_threshold")
     matcher             = 200
   }
