@@ -6,7 +6,7 @@ variable "load_balancer_rule" {
   default = {
     "APINAME.health_check_interval" = 10
     "APINAME.health_check_timeout"  = 5
-    "APINAME.healthy_threshold"   = 3
+    "APINAME.healthy_threshold"     = 3
     "APINAME.unhealthy_threshold"   = 2
     "APINAME.min_capacity"          = 1
     "APINAME.max_capacity"          = 20
