@@ -3,7 +3,7 @@ resource "aws_ecr_repository" "{{ .APIName }}" {
 }
 
 resource "aws_ecr_lifecycle_policy" "{{ .APIName }}" {
-  repository = "${aws_ecr_repository.{{ .Project }}{{ .APIName }}.name}"
+  repository = "${aws_ecr_repository.{{ .APIName }}.name}"
 
   policy = "${file("${path.module}/policy.json")}"
 }
