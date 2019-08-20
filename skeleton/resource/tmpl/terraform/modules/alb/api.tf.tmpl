@@ -31,88 +31,88 @@ resource "aws_alb_listener_rule" "{{ .APIName }}" {
   }
 }
 
-## Auto Scaling
-resource "aws_appautoscaling_target" "ac_{{ .APIName }}" {
-  service_namespace  = "ecs"
-  resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  role_arn           = data.aws_iam_role.ecs_service_autoscaling.arn
-  min_capacity       = lookup(var.load_balancer_rule, "{{ .APIName }}.min_capacity")
-  max_capacity       = lookup(var.load_balancer_rule, "{{ .APIName }}.max_capacity")
-}
-
-resource "aws_appautoscaling_policy" "{{ .APIName }}_scale_up" {
-  name               = "{{ .APIName }}_scale_up"
-  service_namespace  = "ecs"
-  resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
-  scalable_dimension = "ecs:service:DesiredCount"
-
-  step_scaling_policy_configuration {
-    adjustment_type         = "ChangeInCapacity"
-    cooldown                = lookup(var.load_balancer_rule, "{{ .APIName }}.scale_up_cooldown")
-    metric_aggregation_type = "Average"
-
-    step_adjustment {
-      metric_interval_lower_bound = 0
-      scaling_adjustment          = 1
-    }
-  }
-
-  depends_on = ["aws_appautoscaling_target.ac_{{ .APIName }}"]
-}
-
-resource "aws_appautoscaling_policy" "{{ .APIName }}_scale_down" {
-  name               = "{{ .APIName }}_scale_down"
-  service_namespace  = "ecs"
-  resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
-  scalable_dimension = "ecs:service:DesiredCount"
-
-  step_scaling_policy_configuration {
-    adjustment_type         = "ChangeInCapacity"
-    cooldown                = lookup(var.load_balancer_rule, "{{ .APIName }}.scale_down_cooldown")
-    metric_aggregation_type = "Average"
-
-    step_adjustment {
-      metric_interval_upper_bound = 0
-      scaling_adjustment          = -1
-    }
-  }
-
-  depends_on = ["aws_appautoscaling_target.ac_{{ .APIName }}"]
-}
-
-resource "aws_cloudwatch_metric_alarm" "{{ .APIName }}_cpu_high" {
-  alarm_name          = "{{ .APIName }}_cpu_high"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/ECS"
-  period              = "60"
-  statistic           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_high_statistic")
-  threshold           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_high_threshold")
-
-  dimensions = {
-    ClusterName = var.ecs_{{ .Project }}_cluster.name
-    ServiceName = "{{ .APIName }}"
-  }
-
-  alarm_actions = ["${aws_appautoscaling_policy.{{ .APIName }}_scale_up.arn}"]
-}
-
-resource "aws_cloudwatch_metric_alarm" "{{ .APIName }}_cpu_low" {
-  alarm_name          = "{{ .APIName }}_cpu_low"
-  comparison_operator = "LessThanOrEqualToThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/ECS"
-  period              = "60"
-  statistic           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_low_statistic")
-  threshold           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_low_threshold")
-
-  dimensions = {
-    ClusterName = var.ecs_{{ .Project }}_cluster.name
-    ServiceName = "{{ .APIName }}"
-  }
-
-  alarm_actions = ["${aws_appautoscaling_policy.{{ .APIName }}_scale_down.arn}"]
-}
+# ## Auto Scaling
+# resource "aws_appautoscaling_target" "ac_{{ .APIName }}" {
+#   service_namespace  = "ecs"
+#   resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
+#   scalable_dimension = "ecs:service:DesiredCount"
+#   role_arn           = data.aws_iam_role.ecs_service_autoscaling.arn
+#   min_capacity       = lookup(var.load_balancer_rule, "{{ .APIName }}.min_capacity")
+#   max_capacity       = lookup(var.load_balancer_rule, "{{ .APIName }}.max_capacity")
+# }
+# 
+# resource "aws_appautoscaling_policy" "{{ .APIName }}_scale_up" {
+#   name               = "{{ .APIName }}_scale_up"
+#   service_namespace  = "ecs"
+#   resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
+#   scalable_dimension = "ecs:service:DesiredCount"
+# 
+#   step_scaling_policy_configuration {
+#     adjustment_type         = "ChangeInCapacity"
+#     cooldown                = lookup(var.load_balancer_rule, "{{ .APIName }}.scale_up_cooldown")
+#     metric_aggregation_type = "Average"
+# 
+#     step_adjustment {
+#       metric_interval_lower_bound = 0
+#       scaling_adjustment          = 1
+#     }
+#   }
+# 
+#   depends_on = ["aws_appautoscaling_target.ac_{{ .APIName }}"]
+# }
+# 
+# resource "aws_appautoscaling_policy" "{{ .APIName }}_scale_down" {
+#   name               = "{{ .APIName }}_scale_down"
+#   service_namespace  = "ecs"
+#   resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
+#   scalable_dimension = "ecs:service:DesiredCount"
+# 
+#   step_scaling_policy_configuration {
+#     adjustment_type         = "ChangeInCapacity"
+#     cooldown                = lookup(var.load_balancer_rule, "{{ .APIName }}.scale_down_cooldown")
+#     metric_aggregation_type = "Average"
+# 
+#     step_adjustment {
+#       metric_interval_upper_bound = 0
+#       scaling_adjustment          = -1
+#     }
+#   }
+# 
+#   depends_on = ["aws_appautoscaling_target.ac_{{ .APIName }}"]
+# }
+# 
+# resource "aws_cloudwatch_metric_alarm" "{{ .APIName }}_cpu_high" {
+#   alarm_name          = "{{ .APIName }}_cpu_high"
+#   comparison_operator = "GreaterThanOrEqualToThreshold"
+#   evaluation_periods  = "2"
+#   metric_name         = "CPUUtilization"
+#   namespace           = "AWS/ECS"
+#   period              = "60"
+#   statistic           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_high_statistic")
+#   threshold           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_high_threshold")
+# 
+#   dimensions = {
+#     ClusterName = var.ecs_{{ .Project }}_cluster.name
+#     ServiceName = "{{ .APIName }}"
+#   }
+# 
+#   alarm_actions = ["${aws_appautoscaling_policy.{{ .APIName }}_scale_up.arn}"]
+# }
+# 
+# resource "aws_cloudwatch_metric_alarm" "{{ .APIName }}_cpu_low" {
+#   alarm_name          = "{{ .APIName }}_cpu_low"
+#   comparison_operator = "LessThanOrEqualToThreshold"
+#   evaluation_periods  = "2"
+#   metric_name         = "CPUUtilization"
+#   namespace           = "AWS/ECS"
+#   period              = "60"
+#   statistic           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_low_statistic")
+#   threshold           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_low_threshold")
+# 
+#   dimensions = {
+#     ClusterName = var.ecs_{{ .Project }}_cluster.name
+#     ServiceName = "{{ .APIName }}"
+#   }
+# 
+#   alarm_actions = ["${aws_appautoscaling_policy.{{ .APIName }}_scale_down.arn}"]
+# }
