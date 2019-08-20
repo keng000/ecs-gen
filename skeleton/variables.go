@@ -3,7 +3,6 @@ package skeleton
 var baseTemplates = []Template{
 	{"/resource/tmpl/terraform/modules/vpc/main.tf.tmpl", "modules/vpc/main.tf"},
 	{"/resource/tmpl/terraform/modules/vpc/outputs.tf.tmpl", "modules/vpc/outputs.tf"},
-	{"/resource/tmpl/terraform/modules/vpc/variables.tf.tmpl", "modules/vpc/variables.tf"},
 	{"/resource/tmpl/terraform/modules/sg/main.tf.tmpl", "modules/sg/main.tf"},
 	{"/resource/tmpl/terraform/modules/sg/outputs.tf.tmpl", "modules/sg/outputs.tf"},
 	{"/resource/tmpl/terraform/modules/sg/variables.tf.tmpl", "modules/sg/variables.tf"},
