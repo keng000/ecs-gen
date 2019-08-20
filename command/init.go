@@ -22,25 +22,22 @@ func CmdInit(c *cli.Context) error {
 		return err
 	}
 
-	executable := &p_skeleton.Executable{
-		Project: c.String("project"),
-		Region:  c.String("region"),
+	data := map[string]string{
+		"Project": c.String("project"),
 	}
 
 	skeleton := p_skeleton.Skeleton{
-		Path:       path,
-		Executable: executable,
+		Path: path,
 	}
 
-	if err := skeleton.Init(); err != nil {
+	if err := skeleton.Init(data); err != nil {
 		log.Panic(err)
 		return err
 	}
 
 	envFilePath := filepath.Join(path, envFile)
 	dumpExecutable := &p_skeleton.DumpExecutable{
-		Project: executable.Project,
-		Region:  executable.Region,
+		Project: data["Project"],
 	}
 
 	if err := writeExecutable(envFilePath, dumpExecutable); err != nil {

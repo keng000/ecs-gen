@@ -4,8 +4,6 @@ package skeleton
 type Skeleton struct {
 	// Path is where skeleton is generated.
 	Path string
-
-	Executable *Executable
 }
 
 // Executable store the executable meta information

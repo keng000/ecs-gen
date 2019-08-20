@@ -31,19 +31,17 @@ func CmdAPI(c *cli.Context) error {
 		log.Panicf("already exists: %s", apiName)
 		return fmt.Errorf("already exists: %s", apiName)
 	}
-	executable := &skeleton.Executable{
-		Project: dumpExecutable.Project,
-		Region:  dumpExecutable.Region,
-		APIName: apiName,
+
+	data := map[string]string{
+		"APIname": apiName,
 	}
 
 	path := filepath.Dir(envFilePath)
 	skeleton := skeleton.Skeleton{
-		Path:       path,
-		Executable: executable,
+		Path: path,
 	}
 
-	if err := skeleton.API(); err != nil {
+	if err := skeleton.API(data); err != nil {
 		log.Panic(err)
 		return err
 	}
