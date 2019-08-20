@@ -6,15 +6,15 @@ type Skeleton struct {
 	Path string
 }
 
-// Executable store the executable meta information
-type Executable struct {
-	// Project is the name of the ecs project
+// InitExecutable is
+type InitExecutable struct {
+	Project string
+}
+
+// APIExecutable is
+type APIExecutable struct {
 	Project string
 
-	// Region is the aws region where the project will deployed
-	Region string
-
-	// APIName is the name for auto scale generate
 	APIName string
 }
 

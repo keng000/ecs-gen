@@ -29,26 +29,27 @@ func CmdInit(c *cli.Context) error {
 	path := filepath.Join(curDir, pjDirName)
 	_, err = os.Stat(path)
 	if err == nil {
-		log.Panicf("cannot create directory. already exists: %s", path)
+		log.Panicf("Cannot create directory. Project already exists: %s", path)
+		// TODO: ask whether to force initialize
 		return err
 	}
 
-	data := map[string]string{
-		"Project": c.String("project"),
+	executable := p_skeleton.InitExecutable{
+		Project: project,
 	}
 
 	skeleton := p_skeleton.Skeleton{
 		Path: path,
 	}
 
-	if err := skeleton.Init(data); err != nil {
+	if err := skeleton.Init(executable); err != nil {
 		log.Panic(err)
 		return err
 	}
 
 	envFilePath := filepath.Join(path, envFile)
 	dumpExecutable := &p_skeleton.DumpExecutable{
-		Project: data["Project"],
+		Project: executable.Project,
 	}
 
 	if err := writeExecutable(envFilePath, dumpExecutable); err != nil {
