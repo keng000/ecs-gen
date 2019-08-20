@@ -11,6 +11,17 @@ import (
 
 // CmdInit process the init command
 func CmdInit(c *cli.Context) error {
+	var project string
+	if len(c.Args()) == 0 {
+		log.Print("No project name defined. The project name will be `project`")
+		project = "project"
+	} else if len(c.Args()) > 1 {
+		log.Printf("Too much arguments for init command. The following args will be ignored: %v", c.Args()[1:])
+		project = c.Args().First()
+	} else {
+		project = c.Args().First()
+	}
+
 	curDir, err := os.Getwd()
 	if err != nil {
 		return err
