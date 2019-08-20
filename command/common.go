@@ -1,11 +1,14 @@
 package command
 
 import (
+	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/keng000/ecs-gen/skeleton"
 )
 
 const (
@@ -73,4 +76,41 @@ func contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+func loadExecutable(envFilePath string) (*skeleton.DumpExecutable, error) {
+	content, err := ioutil.ReadFile(envFilePath)
+	if err != nil {
+		log.Panic(err)
+		return nil, err
+	}
+
+	dumpExecutable := &skeleton.DumpExecutable{}
+	if err := json.Unmarshal(content, dumpExecutable); err != nil {
+		log.Panic(err)
+		return nil, err
+	}
+	return dumpExecutable, nil
+}
+
+func writeExecutable(envFilePath string, data *skeleton.DumpExecutable) error {
+	dumpData, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		log.Panic(err)
+		return err
+	}
+
+	fp, err := os.Create(envFilePath)
+	if err != nil {
+		log.Panic(err)
+		return err
+	}
+
+	_, err = fp.Write(dumpData)
+	if err != nil {
+		log.Panic(err)
+		return err
+	}
+
+	return nil
 }
