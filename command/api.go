@@ -6,24 +6,24 @@ import (
 	"path/filepath"
 
 	"github.com/keng000/ecs-gen/skeleton"
-	p_skeleton "github.com/keng000/ecs-gen/skeleton"
+	"github.com/keng000/ecs-gen/utils/logger"
 	"github.com/urfave/cli"
 )
 
 func CmdAPI(c *cli.Context) error {
 	envFilePath, err := searchEnv()
 	if err != nil {
-		log.Panic(err)
+		logger.Error(err.Error())
 		return err
 	}
 	dumpExecutable, err := loadExecutable(envFilePath)
 	if err != nil {
-		log.Panic(err)
+		logger.Error(err.Error())
 		return err
 	}
 
 	if len(c.Args()) == 0 {
-		log.Panic("One or more api name should be passed to the args")
+		logger.Error("One or more api name should be passed to the args")
 		return fmt.Errorf("One or more api name should be passed to the args")
 	}
 
@@ -33,18 +33,16 @@ func CmdAPI(c *cli.Context) error {
 			continue
 		}
 
-		executable := p_skeleton.APIExecutable{
+		executable := skeleton.APIExecutable{
 			Project: dumpExecutable.Project,
 			APIName: apiName,
 		}
 
 		path := filepath.Dir(envFilePath)
-		skeleton := skeleton.Skeleton{
-			Path: path,
-		}
 
-		if err := skeleton.API(executable); err != nil {
-			log.Panic(err)
+		s := skeleton.Skeleton{Path: path}
+		if err := s.API(executable); err != nil {
+			logger.Error(err.Error())
 			return err
 		}
 
@@ -53,7 +51,7 @@ func CmdAPI(c *cli.Context) error {
 	}
 
 	if err := writeExecutable(envFilePath, dumpExecutable); err != nil {
-		log.Panic(err)
+		logger.Error(err.Error())
 		return err
 	}
 

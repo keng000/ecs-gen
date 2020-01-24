@@ -18,12 +18,7 @@ var Commands = []cli.Command{
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "project, p",
-				Value: "sample-pj",
-				Usage: "",
-			},
-			cli.StringFlag{
-				Name:  "region, r",
-				Value: "ap-northeast-1",
+				Value: "samplePJ",
 				Usage: "",
 			},
 		},

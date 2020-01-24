@@ -23,9 +23,6 @@ type DumpExecutable struct {
 	// Project is the name of the ecs project
 	Project string
 
-	// Region is the aws region where the project will deployed
-	Region string
-
 	// APIName is the name for auto scale generate
 	APIName []string
 }

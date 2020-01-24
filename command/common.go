@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/keng000/ecs-gen/skeleton"
+	"github.com/keng000/ecs-gen/utils/logger"
 )
 
 const (
@@ -22,7 +22,7 @@ func searchEnv() (string, error) {
 		return "", err
 	}
 
-	envDirExist, err := exists(pjDirName, curPath)
+	envDirExist, err := existsIn(pjDirName, curPath)
 	if err != nil {
 		return "", err
 	}
@@ -31,7 +31,7 @@ func searchEnv() (string, error) {
 	}
 
 	for {
-		exist, err := exists(envFile, curPath)
+		exist, err := existsIn(envFile, curPath)
 		if err != nil {
 			return "", err
 		}
@@ -47,16 +47,13 @@ func searchEnv() (string, error) {
 	}
 
 	envFilePath := filepath.Join(curPath, envFile)
-	if err != nil {
-		panic(err)
-	}
 	return envFilePath, nil
 }
 
-func exists(baseName, dstPath string) (bool, error) {
+func existsIn(baseName, dstPath string) (bool, error) {
 	files, err := ioutil.ReadDir(dstPath)
 	if err != nil {
-		log.Panicf(err.Error())
+		logger.Errorf(err.Error())
 		return false, err
 	}
 
@@ -81,13 +78,13 @@ func contains(s []string, e string) bool {
 func loadExecutable(envFilePath string) (*skeleton.DumpExecutable, error) {
 	content, err := ioutil.ReadFile(envFilePath)
 	if err != nil {
-		log.Panic(err)
+		logger.Error(err.Error())
 		return nil, err
 	}
 
 	dumpExecutable := &skeleton.DumpExecutable{}
 	if err := json.Unmarshal(content, dumpExecutable); err != nil {
-		log.Panic(err)
+		logger.Error(err.Error())
 		return nil, err
 	}
 	return dumpExecutable, nil
@@ -96,19 +93,19 @@ func loadExecutable(envFilePath string) (*skeleton.DumpExecutable, error) {
 func writeExecutable(envFilePath string, data *skeleton.DumpExecutable) error {
 	dumpData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
-		log.Panic(err)
+		logger.Error(err.Error())
 		return err
 	}
 
 	fp, err := os.Create(envFilePath)
 	if err != nil {
-		log.Panic(err)
+		logger.Error(err.Error())
 		return err
 	}
 
 	_, err = fp.Write(dumpData)
 	if err != nil {
-		log.Panic(err)
+		logger.Error(err.Error())
 		return err
 	}
 

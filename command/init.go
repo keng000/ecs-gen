@@ -2,58 +2,35 @@ package command
 
 import (
 	"log"
-	"os"
-	"path/filepath"
 
-	p_skeleton "github.com/keng000/ecs-gen/skeleton"
+	"github.com/keng000/ecs-gen/skeleton"
+	"github.com/keng000/ecs-gen/utils/config"
+	"github.com/keng000/ecs-gen/utils/logger"
 	"github.com/urfave/cli"
 )
 
 // CmdInit process the init command
 func CmdInit(c *cli.Context) error {
-	var project string
-	if len(c.Args()) == 0 {
-		log.Print("No project name defined. The project name will be `project`")
-		project = "project"
-	} else if len(c.Args()) > 1 {
-		log.Printf("Too much arguments for init command. The following args will be ignored: %v", c.Args()[1:])
-		project = c.Args().First()
-	} else {
-		project = c.Args().First()
-	}
+	project := c.String("project")
+	log.Printf("[INFO] project initialized with name `%s`\n", project)
 
-	curDir, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	path := filepath.Join(curDir, pjDirName)
-	_, err = os.Stat(path)
-	if err == nil {
-		log.Panicf("Cannot create directory. Project already exists: %s", path)
-		// TODO: ask whether to force initialize
-		return err
-	}
-
-	executable := p_skeleton.InitExecutable{
+	executable := skeleton.InitExecutable{
 		Project: project,
 	}
 
-	skeleton := p_skeleton.Skeleton{
-		Path: path,
-	}
-
-	if err := skeleton.Init(executable); err != nil {
-		log.Panic(err)
+	cfgCtrl, err := config.NewController()
+	if err != nil {
 		return err
 	}
 
-	envFilePath := filepath.Join(path, envFile)
-	dumpExecutable := &p_skeleton.DumpExecutable{
-		Project: executable.Project,
+	s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
+	if err := s.Init(executable); err != nil {
+		logger.Error(err.Error())
+		return err
 	}
 
-	if err := writeExecutable(envFilePath, dumpExecutable); err != nil {
-		log.Panic(err)
+	cfg := &config.Config{Project: project}
+	if err := cfgCtrl.Write(cfg); err != nil {
 		return err
 	}
 
