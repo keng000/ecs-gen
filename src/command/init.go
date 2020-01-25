@@ -2,6 +2,7 @@ package command
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/keng000/ecs-gen/src/skeleton"
 	"github.com/keng000/ecs-gen/src/utils/config"
@@ -20,14 +21,19 @@ func CmdInit(c *cli.Context) error {
 	}
 
 	project := c.Args().Get(0)
-	logger.Infof("Project initialized with name `%s`\n", project)
-
-	if err := config.Init(); err != nil {
+	cfgCtrl, err := config.NewController()
+	if err != nil {
 		return err
 	}
 
-	cfgCtrl, err := config.NewController()
-	if err != nil {
+	if cfgCtrl.PjAlreadyCreated {
+		msg := fmt.Sprintf("envrionment already exists: %s", cfgCtrl.ProjectRoot)
+		logger.Error(msg)
+		return errors.New(msg)
+	}
+
+	if err := cfgCtrl.Init(); err != nil {
+		logger.Error("Failed to init config file")
 		return err
 	}
 
@@ -45,6 +51,7 @@ func CmdInit(c *cli.Context) error {
 		return err
 	}
 
+	logger.Infof("Project initialized with name `%s`\n", project)
 	logger.Info("Environments created")
 	return nil
 }

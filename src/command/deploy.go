@@ -1,6 +1,7 @@
 package command
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -27,6 +28,12 @@ func CmdDeploy(c *cli.Context) error {
 	cfgCtrl, err := config.NewController()
 	if err != nil {
 		return err
+	}
+
+	if !cfgCtrl.PjAlreadyCreated {
+		msg := "No project found. run `ecs-gen init` before"
+		logger.Error(msg)
+		return errors.New(msg)
 	}
 
 	cfg, err := cfgCtrl.Read()

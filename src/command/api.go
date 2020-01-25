@@ -1,8 +1,6 @@
 package command
 
 import (
-	"fmt"
-
 	"github.com/keng000/ecs-gen/src/skeleton"
 	"github.com/keng000/ecs-gen/src/utils/config"
 	"github.com/keng000/ecs-gen/src/utils/logger"
@@ -14,19 +12,25 @@ func CmdAPI(c *cli.Context) error {
 	cfgCtrl, err := config.NewController()
 	if err != nil {
 		logger.Error("Faild to create config controller")
-		return err
+		panic(err)
+	}
+
+	if !cfgCtrl.PjAlreadyCreated {
+		msg := "No project found. run `ecs-gen init` before"
+		logger.Error(msg)
+		panic(msg)
 	}
 
 	cfg, err := cfgCtrl.Read()
 	if err != nil {
 		logger.Error("Faild to load config")
-		return err
+		panic(err)
 	}
 
 	if len(c.Args()) == 0 {
 		msg := "One or more api name should be passed to the args"
 		logger.Error(msg)
-		return fmt.Errorf(msg)
+		panic(msg)
 	}
 
 	for _, apiName := range c.Args() {
@@ -42,7 +46,7 @@ func CmdAPI(c *cli.Context) error {
 		}); err != nil {
 			logger.Error("Failed to Exec template")
 			logger.Error(err.Error())
-			return err
+			panic(err)
 		}
 
 		cfg.APIName = append(cfg.APIName, apiName)
@@ -51,7 +55,7 @@ func CmdAPI(c *cli.Context) error {
 
 	if err := cfgCtrl.Write(cfg); err != nil {
 		logger.Error(err.Error())
-		return err
+		panic(err)
 	}
 	return nil
 }
