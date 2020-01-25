@@ -25,7 +25,7 @@ var Commands = []cli.Command{
 	},
 	{
 		Name:      "deploy",
-		Usage:     "Generate region derectory for module deploy",
+		Usage:     "Generate region directory for module deploy",
 		ArgsUsage: "[REGIONs...]",
 		Action:    command.CmdDeploy,
 		Flags: []cli.Flag{
