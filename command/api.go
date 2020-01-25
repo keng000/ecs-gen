@@ -7,6 +7,7 @@ import (
 	"github.com/keng000/ecs-gen/skeleton"
 	"github.com/keng000/ecs-gen/utils/config"
 	"github.com/keng000/ecs-gen/utils/logger"
+
 	"github.com/urfave/cli"
 )
 
