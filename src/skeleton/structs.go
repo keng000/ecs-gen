@@ -24,5 +24,9 @@ type (
 		Project string
 
 		Region string
+
+		APIName []string
+
+		LBRule string
 	}
 )

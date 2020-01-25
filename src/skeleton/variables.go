@@ -1,5 +1,7 @@
 package skeleton
 
+//go:generate go-assets-builder -p skeleton resource/ -o assets.go
+
 var baseTemplates = []Template{
 	{"/resource/tmpl/terraform/modules/vpc/main.tf.tmpl", "modules/vpc/main.tf"},
 	{"/resource/tmpl/terraform/modules/vpc/outputs.tf.tmpl", "modules/vpc/outputs.tf"},
@@ -19,11 +21,11 @@ var autoScaleAPITemplates = []Template{
 }
 
 var deploymentTemplates = []Template{
-	{"/resource/tmpl/terraform/regions/.gitignore.tmpl", "{{ .Region }}/.gitignore"},
-	{"/resource/tmpl/terraform/regions/aws.tf.tmpl", "{{ .Region }}/aws.tf"},
-	{"/resource/tmpl/terraform/regions/backend.tf.tmpl", "{{ .Region }}/backend.tf"},
-	{"/resource/tmpl/terraform/regions/modules.tf.tmpl", "{{ .Region }}/modules.tf"},
-	{"/resource/tmpl/terraform/regions/variables.tf.tmpl", "{{ .Region }}/variables.tf"},
+	{"/resource/tmpl/terraform/regions/.gitignore.tmpl", "aws/{{ .Region }}/.gitignore"},
+	{"/resource/tmpl/terraform/regions/aws.tf.tmpl", "aws/{{ .Region }}/aws.tf"},
+	{"/resource/tmpl/terraform/regions/backend.tf.tmpl", "aws/{{ .Region }}/backend.tf"},
+	{"/resource/tmpl/terraform/regions/modules.tf.tmpl", "aws/{{ .Region }}/modules.tf"},
+	{"/resource/tmpl/terraform/regions/variables.tf.tmpl", "aws/{{ .Region }}/variables.tf"},
 }
 
 var regions = []string{

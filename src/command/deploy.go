@@ -8,6 +8,7 @@ import (
 	"github.com/keng000/ecs-gen/src/utils/config"
 	"github.com/keng000/ecs-gen/src/utils/logger"
 
+	mapset "github.com/deckarep/golang-set"
 	"github.com/urfave/cli"
 )
 
@@ -37,37 +38,38 @@ func CmdDeploy(c *cli.Context) error {
 		log.Panic("One or more region name shold be passed to the deploy command")
 	}
 
+	regionSet := mapset.NewSetFromSlice(toInterfaceSlice(cfg.Region))
 	for _, region := range c.Args() {
 		if !isValid(region) {
 			logger.Error("Invalid region name: %s\n", region)
 			continue
 		}
-		if contains(cfg.Region, region) {
-			logger.Infof("Already exists: %s. Do nothing", region)
+		regionSet.Add(region)
+	}
+
+	for region := range regionSet.Iterator().C {
+		region := region.(string)
+		if !isValid(region) {
+			logger.Error("Invalid region name: %s\n", region)
 			continue
 		}
 
-		executable := skeleton.DeployExecutable{
+		s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
+		if err := s.Deploy(&skeleton.DeployExecutable{
 			Project: cfg.Project,
 			Region:  region,
-		}
-
-		s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
-		if err := s.Deploy(executable); err != nil {
+			APIName: cfg.APIName,
+		}); err != nil {
 			logger.Error(err.Error())
 			return err
 		}
 
-		cfg.Region = append(cfg.Region, region)
-		logger.Infof("Region created: %s", region)
+		logger.Infof("Region updated: %s", region)
 	}
 
+	cfg.Region = toStringSlice(regionSet.ToSlice())
 	if err := cfgCtrl.Write(cfg); err != nil {
 		return err
 	}
 	return nil
-}
-
-func isValid(region string) bool {
-	return regions.Contains(region)
 }

@@ -18,6 +18,7 @@ func CmdInit(c *cli.Context) error {
 	} else if c.NArg() > 1 {
 		logger.Info("Multi project name specified. First one will use")
 	}
+
 	project := c.Args().Get(0)
 	logger.Infof("Project initialized with name `%s`\n", project)
 
@@ -31,7 +32,7 @@ func CmdInit(c *cli.Context) error {
 	}
 
 	s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
-	if err := s.Init(skeleton.InitExecutable{Project: project}); err != nil {
+	if err := s.Init(&skeleton.InitExecutable{Project: project}); err != nil {
 		logger.Error(err.Error())
 		return err
 	}

@@ -32,7 +32,7 @@ func (t *Template) Exec(data interface{}) error {
 		return err
 	}
 
-	outputPath, err := renderPath(t.OutputPathTmpl, data)
+	outputPath, err := renderString(t.OutputPathTmpl, data)
 	if err != nil {
 		return err
 	}
@@ -49,8 +49,6 @@ func (t *Template) Exec(data interface{}) error {
 		return err
 	}
 
-	filepath.Dir(t.OutputPathTmpl)
-
 	if err := render(string(tmpl), fp, data); err != nil {
 		return err
 	}
@@ -62,12 +60,12 @@ func (t *Template) Exec(data interface{}) error {
 	return nil
 }
 
-func renderPath(tmpl string, data interface{}) (string, error) {
-	var outputPathBuf bytes.Buffer
-	if err := render(tmpl, &outputPathBuf, data); err != nil {
+func renderString(tmpl string, data interface{}) (string, error) {
+	var buf bytes.Buffer
+	if err := render(tmpl, &buf, data); err != nil {
 		return "", err
 	}
-	return outputPathBuf.String(), nil
+	return buf.String(), nil
 }
 
 func render(tmpl string, fp io.Writer, data interface{}) error {

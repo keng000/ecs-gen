@@ -13,17 +13,20 @@ import (
 func CmdAPI(c *cli.Context) error {
 	cfgCtrl, err := config.NewController()
 	if err != nil {
+		logger.Error("Faild to create config controller")
 		return err
 	}
 
 	cfg, err := cfgCtrl.Read()
 	if err != nil {
+		logger.Error("Faild to load config")
 		return err
 	}
 
 	if len(c.Args()) == 0 {
-		logger.Error("One or more api name should be passed to the args")
-		return fmt.Errorf("One or more api name should be passed to the args")
+		msg := "One or more api name should be passed to the args"
+		logger.Error(msg)
+		return fmt.Errorf(msg)
 	}
 
 	for _, apiName := range c.Args() {
@@ -32,13 +35,11 @@ func CmdAPI(c *cli.Context) error {
 			continue
 		}
 
-		executable := skeleton.APIExecutable{
+		s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
+		if err := s.API(&skeleton.APIExecutable{
 			Project: cfg.Project,
 			APIName: apiName,
-		}
-
-		s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
-		if err := s.API(executable); err != nil {
+		}); err != nil {
 			logger.Error(err.Error())
 			return err
 		}
