@@ -3,9 +3,9 @@ package command
 import (
 	"log"
 
-	"github.com/keng000/ecs-gen/skeleton"
-	"github.com/keng000/ecs-gen/utils/config"
-	"github.com/keng000/ecs-gen/utils/logger"
+	"github.com/keng000/ecs-gen/src/skeleton"
+	"github.com/keng000/ecs-gen/src/utils/config"
+	"github.com/keng000/ecs-gen/src/utils/logger"
 
 	"github.com/urfave/cli"
 )

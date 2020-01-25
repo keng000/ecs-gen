@@ -17,12 +17,3 @@ type APIExecutable struct {
 
 	APIName string
 }
-
-// DumpExecutable is
-type DumpExecutable struct {
-	// Project is the name of the ecs project
-	Project string
-
-	// APIName is the name for auto scale generate
-	APIName []string
-}

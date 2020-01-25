@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/keng000/ecs-gen/utils/logger"
+	"github.com/keng000/ecs-gen/src/utils/logger"
 )
 
 const (

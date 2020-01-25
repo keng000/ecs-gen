@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/keng000/ecs-gen/command"
+	"github.com/keng000/ecs-gen/src/command"
 	"github.com/urfave/cli"
 )
 
