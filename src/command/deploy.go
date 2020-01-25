@@ -60,6 +60,7 @@ func CmdDeploy(c *cli.Context) error {
 			Region:  region,
 			APIName: cfg.APIName,
 		}); err != nil {
+			logger.Error("Failed to Exec template")
 			logger.Error(err.Error())
 			return err
 		}

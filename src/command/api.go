@@ -40,6 +40,7 @@ func CmdAPI(c *cli.Context) error {
 			Project: cfg.Project,
 			APIName: apiName,
 		}); err != nil {
+			logger.Error("Failed to Exec template")
 			logger.Error(err.Error())
 			return err
 		}
@@ -49,6 +50,7 @@ func CmdAPI(c *cli.Context) error {
 	}
 
 	if err := cfgCtrl.Write(cfg); err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 	return nil
