@@ -5,3 +5,7 @@ variable "vpc_subnet_{{ .Project }}_public_c_id" {}
 variable "sg_{{ .Project }}_alb_id" {}
 
 variable "ecs_{{ .Project }}_cluster" {}
+
+variable "load_balancer_rule" {
+    type = "map"
+}

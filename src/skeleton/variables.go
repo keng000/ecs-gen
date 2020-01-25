@@ -17,3 +17,30 @@ var autoScaleAPITemplates = []Template{
 	{"/resource/tmpl/terraform/modules/ecr/api.tf.tmpl", "modules/ecr/{{ .APIName }}.tf"},
 	{"/resource/tmpl/terraform/modules/ecr/policy.json.tmpl", "modules/ecr/policy.json"},
 }
+
+var deploymentTemplates = []Template{
+	{"/resource/tmpl/terraform/regions/.gitignore.tmpl", "{{ .Region }}/.gitignore"},
+	{"/resource/tmpl/terraform/regions/aws.tf.tmpl", "{{ .Region }}/aws.tf"},
+	{"/resource/tmpl/terraform/regions/backend.tf.tmpl", "{{ .Region }}/backend.tf"},
+	{"/resource/tmpl/terraform/regions/modules.tf.tmpl", "{{ .Region }}/modules.tf"},
+	{"/resource/tmpl/terraform/regions/variables.tf.tmpl", "{{ .Region }}/variables.tf"},
+}
+
+var regions = []string{
+	"us-east-1",
+	"us-east-2",
+	"us-west-1",
+	"us-west-2",
+	"ca-central-1",
+	"eu-central-1",
+	"eu-west-1",
+	"eu-west-2",
+	"eu-west-3",
+	"ap-northeast-1",
+	"ap-northeast-2",
+	"ap-northeast-3",
+	"ap-southeast-1",
+	"ap-southeast-2",
+	"ap-south-1",
+	"sa-east-1",
+}

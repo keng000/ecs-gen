@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/keng000/ecs-gen/src/skeleton"
 	"github.com/keng000/ecs-gen/src/utils/config"
@@ -29,7 +28,7 @@ func CmdAPI(c *cli.Context) error {
 
 	for _, apiName := range c.Args() {
 		if contains(cfg.APIName, apiName) {
-			log.Printf("Already exists: %s. Do nothing", apiName)
+			logger.Infof("Already exists: %s. Do nothing", apiName)
 			continue
 		}
 
@@ -45,7 +44,7 @@ func CmdAPI(c *cli.Context) error {
 		}
 
 		cfg.APIName = append(cfg.APIName, apiName)
-		log.Printf("API created: %s", apiName)
+		logger.Infof("API created: %s", apiName)
 	}
 
 	if err := cfgCtrl.Write(cfg); err != nil {

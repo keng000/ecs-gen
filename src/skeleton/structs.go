@@ -1,19 +1,28 @@
 package skeleton
 
-// Skeleton stores meta data of skeleton
-type Skeleton struct {
-	// Path is where skeleton is generated.
-	Path string
-}
+type (
+	// Skeleton stores meta data of skeleton
+	Skeleton struct {
+		// Path is where skeleton is generated.
+		Path string
+	}
 
-// InitExecutable is
-type InitExecutable struct {
-	Project string
-}
+	// InitExecutable is
+	InitExecutable struct {
+		Project string
+	}
 
-// APIExecutable is
-type APIExecutable struct {
-	Project string
+	// APIExecutable is
+	APIExecutable struct {
+		Project string
 
-	APIName string
-}
+		APIName string
+	}
+
+	// DeployExecutable is
+	DeployExecutable struct {
+		Project string
+
+		Region string
+	}
+)

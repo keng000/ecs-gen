@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"text/template"
+
+	"github.com/keng000/ecs-gen/src/utils/logger"
 )
 
 // Template stores meta data of template
@@ -39,7 +40,7 @@ func (t *Template) Exec(data interface{}) error {
 	outputDir := filepath.Dir(outputPath)
 	_, err = os.Stat(outputDir)
 	if err != nil {
-		log.Printf("dir created: %s", outputDir)
+		logger.Infof("dir created: %s", outputDir)
 		_ = os.MkdirAll(outputDir, 0755)
 	}
 

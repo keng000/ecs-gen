@@ -1,7 +1,7 @@
 package command
 
 import (
-	"log"
+	"errors"
 
 	"github.com/keng000/ecs-gen/src/skeleton"
 	"github.com/keng000/ecs-gen/src/utils/config"
@@ -12,8 +12,14 @@ import (
 
 // CmdInit process the init command
 func CmdInit(c *cli.Context) error {
-	project := c.String("project")
-	log.Printf("[INFO] project initialized with name `%s`\n", project)
+	if c.NArg() == 0 {
+		logger.Error("No project name specified")
+		return errors.New("No project name specified")
+	} else if c.NArg() > 1 {
+		logger.Info("Multi project name specified. First one will use")
+	}
+	project := c.Args().Get(0)
+	logger.Infof("Project initialized with name `%s`\n", project)
 
 	if err := config.Init(); err != nil {
 		return err
@@ -35,6 +41,6 @@ func CmdInit(c *cli.Context) error {
 		return err
 	}
 
-	log.Print("environments created")
+	logger.Info("Environments created")
 	return nil
 }

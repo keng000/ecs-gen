@@ -36,6 +36,8 @@ type (
 
 		// APIName is the name for auto scale generate
 		APIName []string
+
+		Region []string
 	}
 )
 
