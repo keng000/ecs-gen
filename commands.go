@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/keng000/ecs-gen/command"
+	"github.com/keng000/ecs-gen/src/command"
 	"github.com/urfave/cli"
 )
 
@@ -18,12 +18,7 @@ var Commands = []cli.Command{
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "project, p",
-				Value: "sample-pj",
-				Usage: "",
-			},
-			cli.StringFlag{
-				Name:  "region, r",
-				Value: "ap-northeast-1",
+				Value: "samplePJ",
 				Usage: "",
 			},
 		},
