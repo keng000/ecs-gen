@@ -20,13 +20,13 @@ var Commands = []cli.Command{
 	{
 		Name:      "api",
 		Usage:     "Generate target groups and ecr repos with auto scale setting",
-		ArgsUsage: "[APIs]",
+		ArgsUsage: "[APIs...]",
 		Action:    command.CmdAPI,
 	},
 	{
 		Name:      "deploy",
 		Usage:     "Generate region derectory for module deploy",
-		ArgsUsage: "[REGIONs]",
+		ArgsUsage: "[REGIONs...]",
 		Action:    command.CmdDeploy,
 		Flags: []cli.Flag{
 			cli.BoolFlag{
