@@ -3,22 +3,21 @@ package command
 import (
 	"fmt"
 	"log"
-	"path/filepath"
 
 	"github.com/keng000/ecs-gen/skeleton"
+	"github.com/keng000/ecs-gen/utils/config"
 	"github.com/keng000/ecs-gen/utils/logger"
 	"github.com/urfave/cli"
 )
 
 func CmdAPI(c *cli.Context) error {
-	envFilePath, err := searchEnv()
+	cfgCtrl, err := config.NewController()
 	if err != nil {
-		logger.Error(err.Error())
 		return err
 	}
-	dumpExecutable, err := loadExecutable(envFilePath)
+
+	cfg, err := cfgCtrl.Read()
 	if err != nil {
-		logger.Error(err.Error())
 		return err
 	}
 
@@ -28,32 +27,28 @@ func CmdAPI(c *cli.Context) error {
 	}
 
 	for _, apiName := range c.Args() {
-		if contains(dumpExecutable.APIName, apiName) {
+		if contains(cfg.APIName, apiName) {
 			log.Printf("Already exists: %s. Do nothing", apiName)
 			continue
 		}
 
 		executable := skeleton.APIExecutable{
-			Project: dumpExecutable.Project,
+			Project: cfg.Project,
 			APIName: apiName,
 		}
 
-		path := filepath.Dir(envFilePath)
-
-		s := skeleton.Skeleton{Path: path}
+		s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
 		if err := s.API(executable); err != nil {
 			logger.Error(err.Error())
 			return err
 		}
 
-		dumpExecutable.APIName = append(dumpExecutable.APIName, apiName)
+		cfg.APIName = append(cfg.APIName, apiName)
 		log.Printf("API created: %s", apiName)
 	}
 
-	if err := writeExecutable(envFilePath, dumpExecutable); err != nil {
-		logger.Error(err.Error())
+	if err := cfgCtrl.Write(cfg); err != nil {
 		return err
 	}
-
 	return nil
 }

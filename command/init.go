@@ -6,6 +6,7 @@ import (
 	"github.com/keng000/ecs-gen/skeleton"
 	"github.com/keng000/ecs-gen/utils/config"
 	"github.com/keng000/ecs-gen/utils/logger"
+
 	"github.com/urfave/cli"
 )
 
@@ -14,8 +15,8 @@ func CmdInit(c *cli.Context) error {
 	project := c.String("project")
 	log.Printf("[INFO] project initialized with name `%s`\n", project)
 
-	executable := skeleton.InitExecutable{
-		Project: project,
+	if err := config.Init(); err != nil {
+		return err
 	}
 
 	cfgCtrl, err := config.NewController()
@@ -24,7 +25,7 @@ func CmdInit(c *cli.Context) error {
 	}
 
 	s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
-	if err := s.Init(executable); err != nil {
+	if err := s.Init(skeleton.InitExecutable{Project: project}); err != nil {
 		logger.Error(err.Error())
 		return err
 	}

@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -37,6 +38,42 @@ type (
 		APIName []string
 	}
 )
+
+// Init creates a new config file
+func Init() error {
+	curPath, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	envDirExist, err := existsIn(pjDirName, curPath)
+	if err != nil {
+		return err
+	}
+	if envDirExist {
+		return fmt.Errorf("%s directory already exists", pjDirName)
+	}
+
+	envFilePath := filepath.Join(curPath, pjDirName, envFile)
+	if err := createEmpty(envFilePath); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createEmpty(path string) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0777); err != nil {
+		return err
+	}
+
+	emptyFile, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	emptyFile.Close()
+	return nil
+}
 
 // NewController returns an instance which meets Controller
 func NewController() (*Controller, error) {
