@@ -13,9 +13,6 @@ NAME:
 USAGE:
    ecs-gen [global options] command [command options] [arguments...]
 
-VERSION:
-   0.2.0
-
 AUTHOR:
    keng000
 
@@ -47,7 +44,7 @@ NAME:
    ecs-gen api - Generate target groups and ecr repos with auto scale setting
 
 USAGE:
-   ecs-gen api [APIs]
+   ecs-gen api [APIs...]
 ```
 
 ### ecs-gen deploy
@@ -57,7 +54,7 @@ NAME:
    ecs-gen deploy - Generate region derectory for module deploy
 
 USAGE:
-   ecs-gen deploy [command options] [REGIONs]
+   ecs-gen deploy [command options] [REGIONs...]
 
 OPTIONS:
    --list, -l  List available region list
