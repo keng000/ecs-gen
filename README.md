@@ -6,9 +6,59 @@ This is a cli tool to generate AWS Fargate api infrastructure which are provisio
 
 ## Usage
 
+```
+NAME:
+   ecs-gen
+
+USAGE:
+   ecs-gen [global options] command [command options] [arguments...]
+
+AUTHOR:
+   keng000
+
+COMMANDS:
+   init     Define basic infrastructure. e.g. VPC, Subnet, SG, TG...
+   api      Generate target groups and ecr repos with auto scale setting
+   deploy   Generate region derectory for module deploy
+   help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h     show help
+   --version, -v  print the version
+```
+
 ### ecs-gen init
 
+```
+NAME:
+   ecs-gen init - Define basic infrastructure. e.g. VPC, Subnet, SG, TG...
+
+USAGE:
+   ecs-gen init [PROJECT]
+```
+
 ### ecs-gen api
+
+```
+NAME:
+   ecs-gen api - Generate target groups and ecr repos with auto scale setting
+
+USAGE:
+   ecs-gen api [APIs...]
+```
+
+### ecs-gen deploy
+
+```
+NAME:
+   ecs-gen deploy - Generate region derectory for module deploy
+
+USAGE:
+   ecs-gen deploy [command options] [REGIONs...]
+
+OPTIONS:
+   --list, -l  List available region list
+```
 
 ## Install
 
@@ -44,6 +94,5 @@ when you update the tpml file, then you need to append into assets.
 run below.
 
 ```
-cd skeleton
-go-assets-builder -p skeleton resource/ > assets.go
+$ go generate ./...
 ```

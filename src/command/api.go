@@ -1,9 +1,6 @@
 package command
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/keng000/ecs-gen/src/skeleton"
 	"github.com/keng000/ecs-gen/src/utils/config"
 	"github.com/keng000/ecs-gen/src/utils/logger"
@@ -14,42 +11,51 @@ import (
 func CmdAPI(c *cli.Context) error {
 	cfgCtrl, err := config.NewController()
 	if err != nil {
-		return err
+		logger.Error("Faild to create config controller")
+		panic(err)
+	}
+
+	if !cfgCtrl.PjAlreadyCreated {
+		msg := "No project found. run `ecs-gen init` before"
+		logger.Error(msg)
+		panic(msg)
 	}
 
 	cfg, err := cfgCtrl.Read()
 	if err != nil {
-		return err
+		logger.Error("Faild to load config")
+		panic(err)
 	}
 
 	if len(c.Args()) == 0 {
-		logger.Error("One or more api name should be passed to the args")
-		return fmt.Errorf("One or more api name should be passed to the args")
+		msg := "One or more api name should be passed to the args"
+		logger.Error(msg)
+		panic(msg)
 	}
 
 	for _, apiName := range c.Args() {
 		if contains(cfg.APIName, apiName) {
-			log.Printf("Already exists: %s. Do nothing", apiName)
+			logger.Infof("Already exists: %s. Do nothing", apiName)
 			continue
 		}
 
-		executable := skeleton.APIExecutable{
+		s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
+		if err := s.API(&skeleton.APIExecutable{
 			Project: cfg.Project,
 			APIName: apiName,
-		}
-
-		s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
-		if err := s.API(executable); err != nil {
+		}); err != nil {
+			logger.Error("Failed to Exec template")
 			logger.Error(err.Error())
-			return err
+			panic(err)
 		}
 
 		cfg.APIName = append(cfg.APIName, apiName)
-		log.Printf("API created: %s", apiName)
+		logger.Infof("API created: %s", apiName)
 	}
 
 	if err := cfgCtrl.Write(cfg); err != nil {
-		return err
+		logger.Error(err.Error())
+		panic(err)
 	}
 	return nil
 }
