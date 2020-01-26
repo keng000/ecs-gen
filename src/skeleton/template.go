@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/keng000/ecs-gen/src/utils/logger"
+	log "github.com/sirupsen/logrus"
 )
 
 // Template stores meta data of template
@@ -40,7 +40,7 @@ func (t *Template) Exec(data interface{}) error {
 	outputDir := filepath.Dir(outputPath)
 	_, err = os.Stat(outputDir)
 	if err != nil {
-		logger.Infof("dir created: %s", outputDir)
+		log.Infof("dir created: %s", outputDir)
 		_ = os.MkdirAll(outputDir, 0755)
 	}
 

@@ -1,15 +1,13 @@
 package command
 
 import (
-	"errors"
 	"fmt"
-	"log"
 
 	"github.com/keng000/ecs-gen/src/skeleton"
 	"github.com/keng000/ecs-gen/src/utils/config"
-	"github.com/keng000/ecs-gen/src/utils/logger"
 
 	mapset "github.com/deckarep/golang-set"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -31,9 +29,7 @@ func CmdDeploy(c *cli.Context) error {
 	}
 
 	if !cfgCtrl.PjAlreadyCreated {
-		msg := "No project found. run `ecs-gen init` before"
-		logger.Error(msg)
-		return errors.New(msg)
+		log.Fatal("No project found. run `ecs-gen init` before")
 	}
 
 	cfg, err := cfgCtrl.Read()
@@ -42,13 +38,15 @@ func CmdDeploy(c *cli.Context) error {
 	}
 
 	if len(c.Args()) == 0 {
-		log.Panic("One or more region name shold be passed to the deploy command")
+		log.Fatal("One or more region name shold be passed to the deploy command")
 	}
 
 	regionSet := mapset.NewSetFromSlice(toInterfaceSlice(cfg.Region))
 	for _, region := range c.Args() {
 		if !isValid(region) {
-			logger.Error("Invalid region name: %s\n", region)
+			log.WithFields(log.Fields{
+				"region": region,
+			}).Error("Invalid region name")
 			continue
 		}
 		regionSet.Add(region)
@@ -56,10 +54,6 @@ func CmdDeploy(c *cli.Context) error {
 
 	for region := range regionSet.Iterator().C {
 		region := region.(string)
-		if !isValid(region) {
-			logger.Error("Invalid region name: %s\n", region)
-			continue
-		}
 
 		s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
 		if err := s.Deploy(&skeleton.DeployExecutable{
@@ -67,17 +61,21 @@ func CmdDeploy(c *cli.Context) error {
 			Region:  region,
 			APIName: cfg.APIName,
 		}); err != nil {
-			logger.Error("Failed to Exec template")
-			logger.Error(err.Error())
-			return err
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Fatal("Failed to Exec template")
 		}
 
-		logger.Infof("Region updated: %s", region)
+		log.WithFields(log.Fields{
+			"region": region,
+		}).Infof("Region updated")
 	}
 
 	cfg.Region = toStringSlice(regionSet.ToSlice())
 	if err := cfgCtrl.Write(cfg); err != nil {
-		return err
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("Failed to dump config into file")
 	}
 	return nil
 }
