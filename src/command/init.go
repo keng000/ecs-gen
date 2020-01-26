@@ -1,57 +1,57 @@
 package command
 
 import (
-	"errors"
-	"fmt"
-
 	"github.com/keng000/ecs-gen/src/skeleton"
 	"github.com/keng000/ecs-gen/src/utils/config"
-	"github.com/keng000/ecs-gen/src/utils/logger"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
 // CmdInit process the init command
 func CmdInit(c *cli.Context) error {
 	if c.NArg() == 0 {
-		logger.Error("No project name specified")
-		return errors.New("No project name specified")
+		log.Fatal("No project name specified")
 	} else if c.NArg() > 1 {
-		logger.Warn("Multi project name specified. First one will use")
+		log.WithFields(log.Fields{
+			"project": c.Args().Get(0),
+		}).Warn("Multi project name specified. First one will use")
 	}
 
 	project := c.Args().Get(0)
 	cfgCtrl, err := config.NewController()
 	if err != nil {
-		return err
+		log.Fatal(err.Error())
 	}
 
 	if cfgCtrl.PjAlreadyCreated {
-		msg := fmt.Sprintf("envrionment already exists: %s", cfgCtrl.ProjectRoot)
-		logger.Error(msg)
-		return errors.New(msg)
+		log.WithFields(log.Fields{
+			"path": cfgCtrl.ProjectRoot,
+		}).Fatal("envrionment already exists")
 	}
 
 	if err := cfgCtrl.Init(); err != nil {
-		logger.Error("Failed to init config file")
-		return err
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("Failed to init config file")
 	}
 
 	s := skeleton.Skeleton{Path: cfgCtrl.ProjectRoot}
 	if err := s.Init(&skeleton.InitExecutable{Project: project}); err != nil {
-		logger.Error("Failed to Exec template")
-		logger.Error(err.Error())
-		return err
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("Failed to Exec template")
 	}
 
 	cfg := &config.Config{Project: project}
 	if err := cfgCtrl.Write(cfg); err != nil {
-		logger.Error("Failed to dump config into file")
-		logger.Error(err.Error())
-		return err
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("Failed to dump config into file")
 	}
 
-	logger.Infof("Project initialized with name `%s`\n", project)
-	logger.Info("Environments created")
+	log.WithFields(log.Fields{
+		"name": project,
+	}).Infof("Project initialized. Environments created")
 	return nil
 }

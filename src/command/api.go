@@ -3,39 +3,39 @@ package command
 import (
 	"github.com/keng000/ecs-gen/src/skeleton"
 	"github.com/keng000/ecs-gen/src/utils/config"
-	"github.com/keng000/ecs-gen/src/utils/logger"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
 func CmdAPI(c *cli.Context) error {
 	cfgCtrl, err := config.NewController()
 	if err != nil {
-		logger.Error("Faild to create config controller")
-		panic(err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("Faild to create config controller")
 	}
 
 	if !cfgCtrl.PjAlreadyCreated {
-		msg := "No project found. run `ecs-gen init` before"
-		logger.Error(msg)
-		panic(msg)
+		log.Fatal("No project found. run `ecs-gen init` before")
 	}
 
 	cfg, err := cfgCtrl.Read()
 	if err != nil {
-		logger.Error("Faild to load config")
-		panic(err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("Faild to load config")
 	}
 
 	if len(c.Args()) == 0 {
-		msg := "One or more api name should be passed to the args"
-		logger.Error(msg)
-		panic(msg)
+		log.Fatal("One or more api name should be passed to the args")
 	}
 
 	for _, apiName := range c.Args() {
 		if contains(cfg.APIName, apiName) {
-			logger.Infof("Already exists: %s. Do nothing", apiName)
+			log.WithFields(log.Fields{
+				"api": apiName,
+			}).Infof("API already exists. Do nothing")
 			continue
 		}
 
@@ -44,18 +44,21 @@ func CmdAPI(c *cli.Context) error {
 			Project: cfg.Project,
 			APIName: apiName,
 		}); err != nil {
-			logger.Error("Failed to Exec template")
-			logger.Error(err.Error())
-			panic(err)
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Fatal("Failed to Exec template")
 		}
 
 		cfg.APIName = append(cfg.APIName, apiName)
-		logger.Infof("API created: %s", apiName)
+		log.WithFields(log.Fields{
+			"api": apiName,
+		}).Infof("API created")
 	}
 
 	if err := cfgCtrl.Write(cfg); err != nil {
-		logger.Error(err.Error())
-		panic(err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("Failed to dump config into file")
 	}
 	return nil
 }

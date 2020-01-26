@@ -3,10 +3,14 @@ package main
 import (
 	"os"
 
+	"github.com/keng000/ecs-gen/src/utils/logger"
+
 	"github.com/urfave/cli"
 )
 
 func main() {
+
+	logger.SetupLogger()
 
 	app := cli.NewApp()
 	app.Name = Name
