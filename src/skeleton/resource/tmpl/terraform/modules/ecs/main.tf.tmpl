@@ -1,4 +1,4 @@
-resource "aws_ecs_cluster" "{{ .Project }}_cluster" {
+resource "aws_ecs_cluster" "{{ .Project }}-cluster" {
   name = "{{ .Project }}"
 
   tags = {

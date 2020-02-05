@@ -1,5 +1,5 @@
-resource "aws_iam_role" "{{ .Project }}_task_exec_role" {
-  name = "{{ .Project }}_${terraform.workspace}_task_exec_role"
+resource "aws_iam_role" "{{ .Project }}-task-exec-role" {
+  name = "{{ .Project }}-${terraform.workspace}-task-exec-role"
   path = "/system/"
 
   assume_role_policy = <<EOF
@@ -19,9 +19,9 @@ resource "aws_iam_role" "{{ .Project }}_task_exec_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "{{ .Project }}_task_exec_policy" {
-  name = "{{ .Project }}_${terraform.workspace}_task_exec_policy"
-  role = aws_iam_role.{{ .Project }}_task_exec_role.id
+resource "aws_iam_role_policy" "{{ .Project }}-task-exec-policy" {
+  name = "{{ .Project }}-${terraform.workspace}-task-exec-policy"
+  role = aws_iam_role.{{ .Project }}-task-exec-role.id
 
   policy = <<EOF
 {

@@ -2,23 +2,23 @@ resource "aws_alb_target_group" "{{ .APIName }}" {
   name        = "{{ .Project }}-{{ .APIName }}-tg"
   port        = 8000
   protocol    = "HTTP"
-  vpc_id      = var.vpc_vpc_{{ .Project }}_id
+  vpc_id      = var.vpc-vpc-{{ .Project }}-id
   target_type = "ip"
 
   health_check {
-    interval            = lookup(var.load_balancer_rule, "{{ .APIName }}.health_check_interval")
+    interval            = lookup(var.load-balancer-rule, "{{ .APIName }}.health-check-interval")
     path                = "/health"
     port                = 8000
     protocol            = "HTTP"
-    timeout             = lookup(var.load_balancer_rule, "{{ .APIName }}.health_check_timeout")
-    healthy_threshold   = lookup(var.load_balancer_rule, "{{ .APIName }}.healthy_threshold")
-    unhealthy_threshold = lookup(var.load_balancer_rule, "{{ .APIName }}.unhealthy_threshold")
+    timeout             = lookup(var.load-balancer-rule, "{{ .APIName }}.health-check-timeout")
+    healthy_threshold   = lookup(var.load-balancer-rule, "{{ .APIName }}.healthy-threshold")
+    unhealthy_threshold = lookup(var.load-balancer-rule, "{{ .APIName }}.unhealthy-threshold")
     matcher             = 200
   }
 }
 
 resource "aws_alb_listener_rule" "{{ .APIName }}" {
-  listener_arn = aws_alb_listener.{{ .Project }}_http.arn
+  listener_arn = aws_alb_listener.{{ .Project }}-http.arn
 
   action {
     type             = "forward"
@@ -32,24 +32,24 @@ resource "aws_alb_listener_rule" "{{ .APIName }}" {
 }
 
 # ## Auto Scaling
-# resource "aws_appautoscaling_target" "ac_{{ .APIName }}" {
+# resource "aws_appautoscaling_target" "autoscale-{{ .APIName }}" {
 #   service_namespace  = "ecs"
-#   resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
+#   resource_id        = "service/${var.ecs-{{ .Project }}-cluster.name}/{{ .APIName }}"
 #   scalable_dimension = "ecs:service:DesiredCount"
-#   role_arn           = data.aws_iam_role.ecs_service_autoscaling.arn
-#   min_capacity       = lookup(var.load_balancer_rule, "{{ .APIName }}.min_capacity")
-#   max_capacity       = lookup(var.load_balancer_rule, "{{ .APIName }}.max_capacity")
+#   role_arn           = data.aws_iam_role.ecs-service-autoscaling.arn
+#   min_capacity       = lookup(var.load-balancer-rule, "{{ .APIName }}.min-capacity")
+#   max_capacity       = lookup(var.load-balancer-rule, "{{ .APIName }}.max-capacity")
 # }
 # 
-# resource "aws_appautoscaling_policy" "{{ .APIName }}_scale_up" {
-#   name               = "{{ .APIName }}_scale_up"
+# resource "aws_appautoscaling_policy" "{{ .APIName }}-scale_up" {
+#   name               = "{{ .APIName }}-scale_up"
 #   service_namespace  = "ecs"
-#   resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
+#   resource_id        = "service/${var.ecs-{{ .Project }}-cluster.name}/{{ .APIName }}"
 #   scalable_dimension = "ecs:service:DesiredCount"
 # 
 #   step_scaling_policy_configuration {
 #     adjustment_type         = "ChangeInCapacity"
-#     cooldown                = lookup(var.load_balancer_rule, "{{ .APIName }}.scale_up_cooldown")
+#     cooldown                = lookup(var.load-balancer-rule, "{{ .APIName }}.scale-up-cooldown")
 #     metric_aggregation_type = "Average"
 # 
 #     step_adjustment {
@@ -58,18 +58,18 @@ resource "aws_alb_listener_rule" "{{ .APIName }}" {
 #     }
 #   }
 # 
-#   depends_on = ["aws_appautoscaling_target.ac_{{ .APIName }}"]
+#   depends_on = ["aws_appautoscaling_target.autoscale-{{ .APIName }}"]
 # }
 # 
-# resource "aws_appautoscaling_policy" "{{ .APIName }}_scale_down" {
-#   name               = "{{ .APIName }}_scale_down"
+# resource "aws_appautoscaling_policy" "{{ .APIName }}-scale_down" {
+#   name               = "{{ .APIName }}-scale_down"
 #   service_namespace  = "ecs"
-#   resource_id        = "service/${var.ecs_{{ .Project }}_cluster.name}/{{ .APIName }}"
+#   resource_id        = "service/${var.ecs-{{ .Project }}-cluster.name}/{{ .APIName }}"
 #   scalable_dimension = "ecs:service:DesiredCount"
 # 
 #   step_scaling_policy_configuration {
 #     adjustment_type         = "ChangeInCapacity"
-#     cooldown                = lookup(var.load_balancer_rule, "{{ .APIName }}.scale_down_cooldown")
+#     cooldown                = lookup(var.load-balancer-rule, "{{ .APIName }}.scale-down-cooldown")
 #     metric_aggregation_type = "Average"
 # 
 #     step_adjustment {
@@ -78,41 +78,41 @@ resource "aws_alb_listener_rule" "{{ .APIName }}" {
 #     }
 #   }
 # 
-#   depends_on = ["aws_appautoscaling_target.ac_{{ .APIName }}"]
+#   depends_on = ["aws_appautoscaling_target.autoscale-{{ .APIName }}"]
 # }
 # 
-# resource "aws_cloudwatch_metric_alarm" "{{ .APIName }}_cpu_high" {
-#   alarm_name          = "{{ .APIName }}_cpu_high"
+# resource "aws_cloudwatch_metric_alarm" "{{ .APIName }}-cpu_high" {
+#   alarm_name          = "{{ .APIName }}-cpu_high"
 #   comparison_operator = "GreaterThanOrEqualToThreshold"
 #   evaluation_periods  = "2"
 #   metric_name         = "CPUUtilization"
 #   namespace           = "AWS/ECS"
 #   period              = "60"
-#   statistic           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_high_statistic")
-#   threshold           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_high_threshold")
+#   statistic           = lookup(var.load-balancer-rule, "{{ .APIName }}.cpu-high-statistic")
+#   threshold           = lookup(var.load-balancer-rule, "{{ .APIName }}.cpu-high-threshold")
 # 
 #   dimensions = {
-#     ClusterName = var.ecs_{{ .Project }}_cluster.name
+#     ClusterName = var.ecs-{{ .Project }}-cluster.name
 #     ServiceName = "{{ .APIName }}"
 #   }
 # 
-#   alarm_actions = ["${aws_appautoscaling_policy.{{ .APIName }}_scale_up.arn}"]
+#   alarm_actions = ["${aws_appautoscaling_policy.{{ .APIName }}-scale_up.arn}"]
 # }
 # 
-# resource "aws_cloudwatch_metric_alarm" "{{ .APIName }}_cpu_low" {
-#   alarm_name          = "{{ .APIName }}_cpu_low"
+# resource "aws_cloudwatch_metric_alarm" "{{ .APIName }}-cpu_low" {
+#   alarm_name          = "{{ .APIName }}-cpu_low"
 #   comparison_operator = "LessThanOrEqualToThreshold"
 #   evaluation_periods  = "2"
 #   metric_name         = "CPUUtilization"
 #   namespace           = "AWS/ECS"
 #   period              = "60"
-#   statistic           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_low_statistic")
-#   threshold           = lookup(var.load_balancer_rule, "{{ .APIName }}.cpu_low_threshold")
+#   statistic           = lookup(var.load-balancer-rule, "{{ .APIName }}.cpu-low-statistic")
+#   threshold           = lookup(var.load-balancer-rule, "{{ .APIName }}.cpu-low-threshold")
 # 
 #   dimensions = {
-#     ClusterName = var.ecs_{{ .Project }}_cluster.name
+#     ClusterName = var.ecs-{{ .Project }}-cluster.name
 #     ServiceName = "{{ .APIName }}"
 #   }
 # 
-#   alarm_actions = ["${aws_appautoscaling_policy.{{ .APIName }}_scale_down.arn}"]
+#   alarm_actions = ["${aws_appautoscaling_policy.{{ .APIName }}-scale_down.arn}"]
 # }

@@ -16,50 +16,50 @@ resource "aws_vpc" "{{ .Project }}" {
 }
 
 # Public Subnets Settings
-resource "aws_subnet" "{{ .Project }}_public_a" {
+resource "aws_subnet" "{{ .Project }}-public-a" {
   vpc_id            = aws_vpc.{{ .Project }}.id
   cidr_block        = "10.1.1.0/24"
-  availability_zone = lookup(var.availability_zone, "${terraform.workspace}.a")
+  availability_zone = lookup(var.availability-zone, "${terraform.workspace}.a")
 
   tags = {
-    Name        = "{{ .Project }}_public_a"
+    Name        = "{{ .Project }}-public-a"
     Environment = terraform.workspace
     Workspace   = terraform.workspace
   }
 }
 
-resource "aws_subnet" "{{ .Project }}_public_c" {
+resource "aws_subnet" "{{ .Project }}-public-c" {
   vpc_id            = aws_vpc.{{ .Project }}.id
   cidr_block        = "10.1.3.0/24"
-  availability_zone = lookup(var.availability_zone, "${terraform.workspace}.c")
+  availability_zone = lookup(var.availability-zone, "${terraform.workspace}.c")
 
   tags = {
-    Name        = "{{ .Project }}_public_c"
+    Name        = "{{ .Project }}-public-c"
     Environment = terraform.workspace
     Workspace   = terraform.workspace
   }
 }
 
 # Private Subnets Settings
-resource "aws_subnet" "{{ .Project }}_private_a" {
+resource "aws_subnet" "{{ .Project }}-private-a" {
   vpc_id            = aws_vpc.{{ .Project }}.id
   cidr_block        = "10.1.100.0/24"
-  availability_zone = lookup(var.availability_zone, "${terraform.workspace}.a")
+  availability_zone = lookup(var.availability-zone, "${terraform.workspace}.a")
 
   tags = {
-    Name        = "{{ .Project }}_private_a"
+    Name        = "{{ .Project }}-private-a"
     Environment = terraform.workspace
     Workspace   = terraform.workspace
   }
 }
 
-resource "aws_subnet" "{{ .Project }}_private_c" {
+resource "aws_subnet" "{{ .Project }}-private-c" {
   vpc_id            = aws_vpc.{{ .Project }}.id
   cidr_block        = "10.1.101.0/24"
-  availability_zone = lookup(var.availability_zone, "${terraform.workspace}.c")
+  availability_zone = lookup(var.availability-zone, "${terraform.workspace}.c")
 
   tags = {
-    Name        = "{{ .Project }}_private_c"
+    Name        = "{{ .Project }}-private-c"
     Environment = terraform.workspace
     Workspace   = terraform.workspace
   }
@@ -75,19 +75,19 @@ resource "aws_route_table" "{{ .Project }}-public-rt" {
   }
 
   tags = {
-    Name        = "{{ .Project }}_public_rt"
+    Name        = "{{ .Project }}-public-rt"
     Environment = terraform.workspace
     Workspace   = terraform.workspace
   }
 }
 
 resource "aws_route_table_association" "{{ .Project }}-rta1" {
-  subnet_id      = aws_subnet.{{ .Project }}_public_a.id
+  subnet_id      = aws_subnet.{{ .Project }}-public-a.id
   route_table_id = aws_route_table.{{ .Project }}-public-rt.id
 }
 
 resource "aws_route_table_association" "{{ .Project }}-rta2" {
-  subnet_id      = aws_subnet.{{ .Project }}_public_c.id
+  subnet_id      = aws_subnet.{{ .Project }}-public-c.id
   route_table_id = aws_route_table.{{ .Project }}-public-rt.id
 }
 
@@ -96,7 +96,7 @@ resource "aws_vpc_dhcp_options" "{{ .Project }}-dhcp" {
   domain_name_servers = ["AmazonProvidedDNS"]
 
   tags = {
-    Name        = "{{ .Project }}_dhcp"
+    Name        = "{{ .Project }}-dhcp"
     Environment = terraform.workspace
     Workspace   = terraform.workspace
   }
@@ -112,7 +112,7 @@ resource "aws_internet_gateway" "{{ .Project }}-igw" {
   vpc_id = aws_vpc.{{ .Project }}.id
 
   tags = {
-    Name        = "{{ .Project }}_igw"
+    Name        = "{{ .Project }}-igw"
     Environment = terraform.workspace
     Workspace   = terraform.workspace
   }

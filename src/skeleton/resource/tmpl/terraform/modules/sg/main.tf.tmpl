@@ -1,6 +1,6 @@
-resource "aws_security_group" "{{ .Project }}_public_subnet_all_tcp" {
-  vpc_id = var.vpc_vpc_{{ .Project }}_id
-  name   = "{{ .Project }}_public_subnet_all_tcp"
+resource "aws_security_group" "{{ .Project }}-public-subnet-all-tcp" {
+  vpc_id = var.vpc-vpc-{{ .Project }}-id
+  name   = "{{ .Project }}-public-subnet-all-tcp"
 
   ingress {
     from_port = 0
@@ -8,8 +8,8 @@ resource "aws_security_group" "{{ .Project }}_public_subnet_all_tcp" {
     protocol  = "-1"
 
     cidr_blocks = [
-      var.vpc_subnet_{{ .Project }}_public_a_cidr_block,
-      var.vpc_subnet_{{ .Project }}_public_c_cidr_block,
+      var.vpc-subnet-{{ .Project }}-public-a-cidr-block,
+      var.vpc-subnet-{{ .Project }}-public-c-cidr-block,
     ]
   }
 
@@ -26,9 +26,9 @@ resource "aws_security_group" "{{ .Project }}_public_subnet_all_tcp" {
   }
 }
 
-resource "aws_security_group" "{{ .Project }}_private_subnet_all_tcp" {
-  vpc_id = var.vpc_vpc_{{ .Project }}_id
-  name   = "{{ .Project }}_private_subnet_all_tcp"
+resource "aws_security_group" "{{ .Project }}-private-subnet-all-tcp" {
+  vpc_id = var.vpc-vpc-{{ .Project }}-id
+  name   = "{{ .Project }}-private-subnet-all-tcp"
 
   ingress {
     from_port = 0
@@ -36,8 +36,8 @@ resource "aws_security_group" "{{ .Project }}_private_subnet_all_tcp" {
     protocol  = "-1"
 
     cidr_blocks = [
-      var.vpc_subnet_{{ .Project }}_private_a_cidr_block,
-      var.vpc_subnet_{{ .Project }}_private_c_cidr_block,
+      var.vpc-subnet-{{ .Project }}-private-a-cidr-block,
+      var.vpc-subnet-{{ .Project }}-private-c-cidr-block,
     ]
   }
 
@@ -54,9 +54,9 @@ resource "aws_security_group" "{{ .Project }}_private_subnet_all_tcp" {
   }
 }
 
-resource "aws_security_group" "{{ .Project }}_alb" {
-  vpc_id = var.vpc_vpc_{{ .Project }}_id
-  name   = "{{ .Project }}_alb"
+resource "aws_security_group" "{{ .Project }}-alb" {
+  vpc_id = var.vpc-vpc-{{ .Project }}-id
+  name   = "{{ .Project }}-alb"
 
   ingress {
     from_port   = 80
@@ -92,9 +92,9 @@ resource "aws_security_group" "{{ .Project }}_alb" {
   }
 }
 
-resource "aws_security_group" "{{ .Project }}_ecs" {
-  vpc_id = var.vpc_vpc_{{ .Project }}_id
-  name   = "{{ .Project }}_ecs"
+resource "aws_security_group" "{{ .Project }}-ecs" {
+  vpc_id = var.vpc-vpc-{{ .Project }}-id
+  name   = "{{ .Project }}-ecs"
 
   ingress {
     from_port   = 80
@@ -103,7 +103,7 @@ resource "aws_security_group" "{{ .Project }}_ecs" {
     cidr_blocks = ["0.0.0.0/0"]
 
     security_groups = [
-      aws_security_group.{{ .Project }}_alb.id,
+      aws_security_group.{{ .Project }}-alb.id,
     ]
   }
 
@@ -114,7 +114,7 @@ resource "aws_security_group" "{{ .Project }}_ecs" {
     cidr_blocks = ["0.0.0.0/0"]
 
     security_groups = [
-      aws_security_group.{{ .Project }}_alb.id,
+      aws_security_group.{{ .Project }}-alb.id,
     ]
   }
 
@@ -125,7 +125,7 @@ resource "aws_security_group" "{{ .Project }}_ecs" {
     cidr_blocks = ["0.0.0.0/0"]
 
     security_groups = [
-      aws_security_group.{{ .Project }}_alb.id,
+      aws_security_group.{{ .Project }}-alb.id,
     ]
   }
 

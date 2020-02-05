@@ -4,12 +4,14 @@ package skeleton
 
 var baseTemplates = []Template{
 	{"/resource/tmpl/terraform/modules/vpc/main.tf.tmpl", "modules/aws/vpc/main.tf"},
+	{"/resource/tmpl/terraform/modules/vpc/variables.tf.tmpl", "modules/aws/vpc/variables.tf"},
 	{"/resource/tmpl/terraform/modules/vpc/outputs.tf.tmpl", "modules/aws/vpc/outputs.tf"},
 	{"/resource/tmpl/terraform/modules/sg/main.tf.tmpl", "modules/aws/sg/main.tf"},
 	{"/resource/tmpl/terraform/modules/sg/outputs.tf.tmpl", "modules/aws/sg/outputs.tf"},
 	{"/resource/tmpl/terraform/modules/sg/variables.tf.tmpl", "modules/aws/sg/variables.tf"},
 	{"/resource/tmpl/terraform/modules/ecs/main.tf.tmpl", "modules/aws/ecs/main.tf"},
 	{"/resource/tmpl/terraform/modules/ecs/outputs.tf.tmpl", "modules/aws/ecs/outputs.tf"},
+	{"/resource/tmpl/terraform/modules/iam/ecs.tf.tmpl", "modules/aws/iam/ecs.tf"},
 }
 
 var autoScaleAPITemplates = []Template{

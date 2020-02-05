@@ -1,26 +1,28 @@
 module "vpc" {
   source = "../../modules/aws/vpc"
+
+  availability-zone = var.availability-zone
 }
 
 module "sg" {
   source = "../../modules/aws/sg"
 
-  vpc_subnet_{{ .Project }}_private_a_cidr_block = module.vpc.subnet_{{ .Project }}_private_a_cidr_block
-  vpc_subnet_{{ .Project }}_private_c_cidr_block = module.vpc.subnet_{{ .Project }}_private_c_cidr_block
-  vpc_subnet_{{ .Project }}_public_a_cidr_block  = module.vpc.subnet_{{ .Project }}_public_a_cidr_block
-  vpc_subnet_{{ .Project }}_public_c_cidr_block  = module.vpc.subnet_{{ .Project }}_public_c_cidr_block
-  vpc_vpc_{{ .Project }}_id                      = module.vpc.vpc_{{ .Project }}_id
+  vpc-subnet-{{ .Project }}-private-a-cidr-block = module.vpc.subnet-{{ .Project }}-private-a-cidr-block
+  vpc-subnet-{{ .Project }}-private-c-cidr-block = module.vpc.subnet-{{ .Project }}-private-c-cidr-block
+  vpc-subnet-{{ .Project }}-public-a-cidr-block  = module.vpc.subnet-{{ .Project }}-public-a-cidr-block
+  vpc-subnet-{{ .Project }}-public-c-cidr-block  = module.vpc.subnet-{{ .Project }}-public-c-cidr-block
+  vpc-vpc-{{ .Project }}-id                      = module.vpc.vpc-{{ .Project }}-id
 }
 
 module "alb" {
   source = "../../modules/aws/alb"
 
-  vpc_vpc_{{ .Project }}_id             = module.vpc.vpc_{{ .Project }}_id
-  sg_{{ .Project }}_alb_id              = module.sg.{{ .Project }}_alb_id
-  vpc_subnet_{{ .Project }}_public_a_id = module.vpc.subnet_{{ .Project }}_public_a_id
-  vpc_subnet_{{ .Project }}_public_c_id = module.vpc.subnet_{{ .Project }}_public_c_id
-  ecs_{{ .Project }}_cluster            = module.ecs.{{ .Project }}_cluster
-  load_balancer_rule                    = var.load_balancer_rule
+  vpc-vpc-{{ .Project }}-id             = module.vpc.vpc-{{ .Project }}-id
+  sg-{{ .Project }}-alb-id              = module.sg.{{ .Project }}-alb-id
+  vpc-subnet-{{ .Project }}-public-a-id = module.vpc.subnet-{{ .Project }}-public-a-id
+  vpc-subnet-{{ .Project }}-public-c-id = module.vpc.subnet-{{ .Project }}-public-c-id
+  ecs-{{ .Project }}-cluster            = module.ecs.{{ .Project }}-cluster
+  load-balancer-rule                    = var.load-balancer-rule
 }
 
 module "ecs" {
@@ -35,7 +37,3 @@ module "iam" {
   source = "../../modules/aws/iam"
 }
 
-module "s3" {
-  source = "../../modules/aws/s3"
-
-}

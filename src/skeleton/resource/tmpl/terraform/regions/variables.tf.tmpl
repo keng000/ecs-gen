@@ -1,5 +1,17 @@
-variable "load_balancer_rule" {
-  type = "map"
+# update belong to your configuration
+variable "availability-zone" {
+  type = map(string)
+  default = {
+    "development.a" = ""
+    "development.c" = ""
+
+    "production.a" = ""
+    "production.c" = ""
+  }
+}
+
+variable "load-balancer-rule" {
+  type = map(string)
   default = {
     {{ .LBRule }}
   }
