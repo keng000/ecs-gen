@@ -1,15 +1,15 @@
 # variables.tf
 
 ```
-variable "load_balancer_rule" {
+variable "load-balancer-rule" {
   type = "map"
   default = {
-    "APINAME.health_check_interval" = 10
-    "APINAME.health_check_timeout"  = 5
-    "APINAME.healthy_threshold"     = 3
-    "APINAME.unhealthy_threshold"   = 2
-    "APINAME.min_capacity"          = 1
-    "APINAME.max_capacity"          = 20
+    "APINAME.health-check-interval" = 10
+    "APINAME.health-check-timeout"  = 5
+    "APINAME.healthy-threshold"     = 3
+    "APINAME.unhealthy-threshold"   = 2
+    "APINAME.min-capacity"          = 1
+    "APINAME.max-capacity"          = 20
     "APINAME.cpu_high_statistic"    = "Average"
     "APINAME.cpu_low_statistic"     = "Average"
     "APINAME.cpu_high_threshold"    = 60
