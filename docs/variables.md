@@ -10,12 +10,12 @@ variable "load-balancer-rule" {
     "APINAME.unhealthy-threshold"   = 2
     "APINAME.min-capacity"          = 1
     "APINAME.max-capacity"          = 20
-    "APINAME.cpu_high_statistic"    = "Average"
-    "APINAME.cpu_low_statistic"     = "Average"
-    "APINAME.cpu_high_threshold"    = 60
-    "APINAME.cpu_low_threshold"     = 30
-    "APINAME.scale_up_cooldown"     = 600
-    "APINAME.scale_down_cooldown"   = 600
+    "APINAME.cpu-high-statistic"    = "Average"
+    "APINAME.cpu-low-statistic"     = "Average"
+    "APINAME.cpu-high-threshold"    = 60
+    "APINAME.cpu-low-threshold"     = 30
+    "APINAME.scale-up-cooldown"     = 600
+    "APINAME.scale-down-cooldown"   = 600
   }
 }
 ```
