@@ -13,3 +13,7 @@ output "{{.Project }}-alb-id" {
 output "{{.Project }}-ecs-id" {
   value = aws_security_group.{{.Project }}-ecs.id
 }
+
+output "{{.Project }}-rds-ids" {
+  value = [module.{{.Project }}-mysql.this_security_group_id]
+}

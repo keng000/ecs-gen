@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"text/template"
 
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -24,12 +25,12 @@ type Template struct {
 func (t *Template) Exec(data interface{}) error {
 	tmplHTTPFile, err := Assets.Open(t.Path)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to read template from Assets")
 	}
 
 	tmpl, err := ioutil.ReadAll(tmplHTTPFile)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to read Assets reader")
 	}
 
 	outputPath, err := renderString(t.OutputPathTmpl, data)
@@ -63,7 +64,7 @@ func (t *Template) Exec(data interface{}) error {
 func renderString(tmpl string, data interface{}) (string, error) {
 	var buf bytes.Buffer
 	if err := render(tmpl, &buf, data); err != nil {
-		return "", err
+		return "", errors.Wrap(err, "failed to render into string")
 	}
 	return buf.String(), nil
 }

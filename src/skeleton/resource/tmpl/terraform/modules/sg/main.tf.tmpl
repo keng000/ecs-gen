@@ -141,3 +141,24 @@ resource "aws_security_group" "{{ .Project }}-ecs" {
     Environment = terraform.workspace
   }
 }
+
+module "{{ .Project }}-mysql" {
+  source = "terraform-aws-modules/security-group/aws"
+
+  vpc_id = var.vpc-vpc-{{ .Project }}-id
+  name   = "{{ .Project }}-rds"
+
+  ingress_with_source_security_group_id = [
+    {
+      rule                     = "mysql-tcp"
+      source_security_group_id = aws_security_group.{{ .Project }}-ecs.id
+    }
+  ]
+
+  egress_rules = ["all-all"]
+
+  tags = {
+    Environment = terraform.workspace
+    Workspace   = terraform.workspace
+  }
+}

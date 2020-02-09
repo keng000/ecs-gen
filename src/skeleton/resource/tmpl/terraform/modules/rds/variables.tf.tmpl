@@ -1,0 +1,7 @@
+variable "vpc-{{ .Project }}-public-subnets" {
+  type = list(string)
+}
+
+variable "sg-{{ .Project }}-rds-ids" {
+  type = list(string)
+}
