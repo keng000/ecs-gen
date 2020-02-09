@@ -30,6 +30,12 @@ var deploymentTemplates = []Template{
 	{"/resource/tmpl/terraform/regions/variables.tf.tmpl", "aws/{{ .Region }}/variables.tf"},
 }
 
+var replicateDBTemplate = []Template{
+	{"/resource/tmpl/terraform/modules/rds/main.tf.tmpl", "modules/aws/rds/main.tf"},
+	{"/resource/tmpl/terraform/modules/rds/replica.tf.tmpl", "modules/aws/rds/replica.tf"},
+	{"/resource/tmpl/terraform/modules/rds/variables.tf.tmpl", "modules/aws/rds/variables.tf"},
+}
+
 var regions = []string{
 	"us-east-1",
 	"us-east-2",

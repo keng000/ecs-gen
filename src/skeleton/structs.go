@@ -29,4 +29,11 @@ type (
 
 		LBRule string
 	}
+
+	// DBExecutable is
+	DBExecutable struct {
+		Project string
+
+		DBName string
+	}
 )

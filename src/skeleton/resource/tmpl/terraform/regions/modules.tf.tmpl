@@ -44,4 +44,6 @@ module "rds" {
     module.vpc.subnet-{{ .Project }}-public-a-id,
     module.vpc.subnet-{{ .Project }}-public-c-id
   ]
+
+  sg-{{ .Project }}-rds-ids = module.sg.{{.Project }}-rds-ids
 }

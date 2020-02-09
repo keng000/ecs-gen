@@ -35,6 +35,12 @@ var Commands = []cli.Command{
 			},
 		},
 	},
+	{
+		Name:      "db",
+		Usage:     "Create RDS instance with read replica which can access from ecs tasks",
+		ArgsUsage: "[DBNAME]",
+		Action:    command.CmdDB,
+	},
 }
 
 func CommandNotFound(c *cli.Context, command string) {
