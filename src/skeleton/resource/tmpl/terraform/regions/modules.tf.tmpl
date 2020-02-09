@@ -37,3 +37,11 @@ module "iam" {
   source = "../../modules/aws/iam"
 }
 
+module "rds" {
+  source = "../../modules/aws/rds"
+
+  vpc-{{ .Project }}-public-subnets = [
+    module.vpc.subnet-{{ .Project }}-public-a-id,
+    module.vpc.subnet-{{ .Project }}-public-c-id
+  ]
+}

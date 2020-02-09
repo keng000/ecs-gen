@@ -1,0 +1,117 @@
+locals {
+  engine               = "mysql"
+  engine_version       = "8.0.16"
+  major_engine_version = "8.0"
+  instance_class       = "db.t2.micro"
+  allocated_storage    = terraform.workspace == "production" ? 25 : 15
+}
+
+module "master" {
+  source  = "terraform-aws-modules/rds/aws"
+  version = "~> 2.0"
+
+  identifier           = "{{ .Project }}-mysql-master"
+  engine               = local.engine
+  engine_version       = local.engine_version
+  major_engine_version = local.major_engine_version
+  instance_class       = local.instance_class
+  allocated_storage    = local.allocated_storage
+
+  # If you want to change port, you also should change the security group config.
+  name     = "{{ .DBName }}"
+  username = ""
+  password = ""
+  port     = 3306
+
+  vpc_security_group_ids = var.sg-{{ .Project }}-rds-ids
+  subnet_ids             = var.vpc-{{ .Project }}-public-subnets
+
+  allow_major_version_upgrade = true
+  backup_retention_period     = 1
+  backup_window               = "17:08-17:38"
+  storage_type                = "gp2"
+  maintenance_window          = "Mon:08:38-Mon:09:38"
+  multi_az                    = true
+  apply_immediately           = true
+  publicly_accessible         = true
+  create_db_option_group      = false
+  create_db_parameter_group   = false
+
+  parameters = [
+    {
+      name  = "character_set_client"
+      value = "utf8mb4"
+    },
+    {
+      name  = "character_set_server"
+      value = "utf8mb4"
+    },
+    {
+      name  = "slow_query_log"
+      value = 1
+    }
+  ]
+
+  tags = {
+    RDS         = "{{ .Project }}-rds"
+    Environment = terraform.workspace
+  }
+}
+
+module "replica" {
+  source  = "terraform-aws-modules/rds/aws"
+  version = "~> 2.0"
+
+  replicate_source_db = module.master.this_db_instance_id
+
+  identifier           = "{{ .Project }}-mysql-replica"
+  engine               = local.engine
+  engine_version       = local.engine_version
+  major_engine_version = local.major_engine_version
+  instance_class       = local.instance_class
+  allocated_storage    = local.allocated_storage
+
+  # Username and password should not be set for replicas
+  username = ""
+  password = ""
+  port     = 3306
+
+  vpc_security_group_ids = var.sg-{{ .Project }}-rds-ids
+
+  allow_major_version_upgrade = true
+
+  # disable backups of replica to create DB faster
+  backup_retention_period   = 0
+
+  # Not allowed to specify a subnet group for replicas in the same region
+  create_db_subnet_group = false
+
+  backup_window             = "17:08-17:38"
+  storage_type              = "gp2"
+  maintenance_window        = "Mon:08:38-Mon:09:38"
+  multi_az                  = false
+  apply_immediately         = true
+  publicly_accessible       = true
+  create_db_option_group    = false
+  create_db_parameter_group = false
+
+  parameters = [
+    {
+      name  = "character_set_client"
+      value = "utf8mb4"
+    },
+    {
+      name  = "character_set_server"
+      value = "utf8mb4"
+    },
+    {
+      name  = "slow_query_log"
+      value = 1
+    }
+  ]
+
+  tags = {
+    RDS         = "{{ .Project }}-rds"
+    Environment = terraform.workspace
+  }
+}
